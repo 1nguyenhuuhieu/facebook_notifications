@@ -46,10 +46,9 @@ while True:
         print(post_text.text)
         print("--------------------------")
         file1 = open("report.txt", "a")  # append mode
-        file1.write(post_text.text)
-        file1.write("\n")
-        print("--------------------------")
-        file1.write("\n")
+        file1.write(str(post_text.text) + "\n" + "-----------------")
         file1.close()
+
+        print("saved")
     except:
         print("Try again")
