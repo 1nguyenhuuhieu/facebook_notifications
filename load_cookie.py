@@ -8,7 +8,7 @@ prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs",prefs)
 
 keywords = [
-   "bán","diện tích", "cần tìm", "cần mua", "muốn mua", "muốn tìm", "tìm nhà", "tìm đất", "tìm mua", "tìm mảnh", "cần mảnh", "minh quang", "thôn dy", "suối hai", "cẩm lĩnh"
+   "cần tìm", "cần mua", "muốn mua", "muốn tìm", "tìm nhà", "tìm đất", "tìm mua", "tìm mảnh", "cần mảnh", "minh quang", "thôn dy", "suối hai", "cẩm lĩnh"
 ]
 driver = webdriver.Chrome(executable_path="./chromedriver", chrome_options=chrome_options)
 
@@ -21,7 +21,7 @@ file.close()
 for cookie in cookies:
     driver.add_cookie(cookie)
 
-
+count = 0
 while True:
     try:
         driver.get("https://www.facebook.com/notifications")
@@ -33,6 +33,7 @@ while True:
         time.sleep(3)
         news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
         news_btn.click()
+        count += 1
 
         time.sleep(5)
 
@@ -49,11 +50,14 @@ while True:
         for keyword in keywords:
             if keyword in post_text:
                 post_url = driver.current_url
-                print(f"Keyword: {keyword}")
+                print(f"Keyword: {keyword} in post {count}")
                 print(f"Post URL: {post_url}")
                 print("*******")
                 print(post_text)
                 print("--------------------------")
+            else:
+                print(f"Not found keyword in post {count}")
+
 
     except:
         print("Try again")
