@@ -56,7 +56,7 @@ while True:
                 print(post_text)
                 print("--------------------------")
             else:
-                print(f"Not found keyword in post {count}")
+                print(f"Not found '{keyword}' in post {count}")
 
 
     except:
