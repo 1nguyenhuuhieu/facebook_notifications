@@ -3,6 +3,19 @@ import random
 import time
 from selenium.webdriver.common.by import By
 from selenium import webdriver
+
+import smtplib
+from email.message import EmailMessage
+
+sender_mail = "1nguyenhuuhieu@gmail.com"
+
+password = "ycydocwufdfejphw"
+
+reciever_mail = "legolinking@gmail.com"
+ 
+
+
+
 chrome_options = webdriver.ChromeOptions()
 prefs = {"profile.default_content_setting_values.notifications" : 2}
 chrome_options.add_experimental_option("prefs",prefs)
@@ -50,14 +63,41 @@ while True:
         for keyword in keywords:
             if keyword in post_text:
                 post_url = driver.current_url
+                list_str = post_url.split("/")
+
                 print(f"Keyword: {keyword} in post {count}")
-                print(f"Post URL: {post_url}")
+                print(f"Post URL: {post_url} tại group {list_str[4]}")
                 print("*******")
                 print(post_text)
                 print("--------------------------")
+                # creates SMTP session
+                s = smtplib.SMTP('smtp.gmail.com', 587)
+                
+                # start TLS for security
+                s.starttls()
+                
+                # Authentication
+                s.login(sender_mail, password)
+                
+                # message to be sent
+                msg = EmailMessage()
+                msg.set_content(f'Tìm thấy từ khóa "{keyword}" trong bài viết {count} tại group: {list_str[4]} \nLink bài viết: {post_url} \n Nội dung bài viết:\n{post_text}')
+
+                msg['Subject'] = 'Thông báo về từ khóa trên group facebook'
+                msg['From'] = "1nguyenhuuhieu@gmail.com"
+                msg['To'] = "huuhieung90@gmail.com"
+                
+                # sending the mail
+                s.send_message(msg)
+                
+                # terminating the session
+                s.quit()
+
+
             else:
                 print(f"Not found '{keyword}' in post {count}")
 
 
     except:
         print("Try again")
+
