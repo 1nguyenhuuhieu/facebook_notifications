@@ -140,10 +140,7 @@ def notifications_listener():
         news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
         news_btn.click()
         time.sleep(10)
-        print("find post text")
         post = driver.find_element(By.CSS_SELECTOR, "span[class='x193iq5w xeuugli x13faqbe x1vvkbs x10flsy6 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x4zkp8e x41vudc x6prxxf xvq8zen xo1l8bm xzsf02u x1yc453h']")
-        print("post text:-------")
-        print(post.text)
 
         time.sleep(2)
         if "more" in post.text:
