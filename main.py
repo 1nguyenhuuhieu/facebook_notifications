@@ -75,7 +75,7 @@ def init_driver(driver_filepath):
     chrome_options.add_experimental_option("prefs",prefs)
     
     
-    return webdriver.Chrome(executable_path=driver_filepath)
+    return webdriver.Chrome(executable_path=driver_filepath, chrome_options=chrome_options)
 
 
 
