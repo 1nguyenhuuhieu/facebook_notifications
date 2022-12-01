@@ -1,5 +1,16 @@
-str = "https://www.facebook.com/groups/1361900573820229/?multi_permalinks=6140635455946693%2C6140630132613892%2C6140618395948399%2C6140616615948577%2C6140589385951300&notif_id=1669693769711679&notif_t=group_activity&ref=notif"
+import configparser
 
-list_str = str.split("/")
+import json
 
-print(list_str[4])
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+keyword_filepath = config["KEYWORDS"]["file_path"]
+
+file = open(keyword_filepath, encoding='utf-8')
+cookies = json.load(file)
+file.close()
+t = [keyword for keyword in cookies.values()]
+
+print(t)
