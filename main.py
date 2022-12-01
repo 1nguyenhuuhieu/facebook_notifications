@@ -185,7 +185,7 @@ def goto_notifications_page():
 
         see_all_link.click()
     except:
-        pass
+        driver.get(notifications_url)
 
 driver = init_driver(driver_filepath)
 login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
