@@ -1,7 +1,6 @@
 import configparser
 
 import json
-import random
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -47,7 +46,7 @@ keywords = load_keywords(keyword_filepath)
 
 
 # Gửi mail sử dụng application pwd của gmail
-def send_notification_mail(sender, pwd, receiver, msg):
+def send_notification_mail(sender, pwd, receiver, email_content):
     # creates SMTP session
     s = smtplib.SMTP('smtp.gmail.com', 587)
     # start TLS for security
@@ -56,7 +55,7 @@ def send_notification_mail(sender, pwd, receiver, msg):
     s.login(sender, pwd)
     # message to be sent
     msg = EmailMessage()
-    msg.set_content(msg)
+    msg.set_content(email_content)
     msg['Subject'] = 'Thông báo về từ khóa trên group facebook'
     msg['From'] = sender
     msg['To'] = receiver
@@ -64,6 +63,7 @@ def send_notification_mail(sender, pwd, receiver, msg):
     s.send_message(msg)
     # terminating the session
     s.quit()
+    print("---------------------------------------")
     print("Gửi mail thông báo thành công")
 
     return None
