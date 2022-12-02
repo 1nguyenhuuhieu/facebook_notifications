@@ -8,6 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 
 import smtplib
+import func_timeout
 from email.message import EmailMessage
 
 
@@ -51,6 +52,8 @@ keyword_filepath = config["KEYWORDS"]["file_path"]
 
 #load keywords từ file json
 keywords = load_keywords(keyword_filepath)
+
+print(keywords)
 
 
 # Gửi mail sử dụng application pwd của gmail
@@ -143,54 +146,53 @@ def notifications_listener():
     time.sleep(3)
     found = False
     keywords_found = []
-    try:
-        time.sleep(random.randint(10,20))
-        unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div/span/span')
-        unread_btn.click()
+  
+    time.sleep(random.randint(10,20))
+    unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div/span/span')
+    unread_btn.click()
+
+    time.sleep(random.randint(10,20))
+    news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
+    news_btn.click()
+    time.sleep(random.randint(10,20))
+    post = driver.find_element(By.CSS_SELECTOR, "span[class='x193iq5w xeuugli x13faqbe x1vvkbs x10flsy6 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x4zkp8e x41vudc x6prxxf xvq8zen xo1l8bm xzsf02u x1yc453h']")
+
+    time.sleep(random.randint(10,20))
+    if "more" in post.text:
+        seemore_btn = driver.find_element(By.CSS_SELECTOR, "div[class='x1i10hfl xjbqb8w x6umtig x1b1mbwd xaqea5y xav7gou x9f619 x1ypdohk xt0psk2 xe8uvvx xdj266r x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x16tdsg8 x1hl2dhg xggy1nq x1a2a7pz xt0b8zv xzsf02u x1s688f']")
+        
+        seemore_btn.click()
 
         time.sleep(random.randint(10,20))
-        news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
-        news_btn.click()
-        time.sleep(random.randint(10,20))
-        post = driver.find_element(By.CSS_SELECTOR, "span[class='x193iq5w xeuugli x13faqbe x1vvkbs x10flsy6 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x4zkp8e x41vudc x6prxxf xvq8zen xo1l8bm xzsf02u x1yc453h']")
 
-        time.sleep(random.randint(10,20))
-        if "more" in post.text:
-            seemore_btn = driver.find_element(By.CSS_SELECTOR, "div[class='x1i10hfl xjbqb8w x6umtig x1b1mbwd xaqea5y xav7gou x9f619 x1ypdohk xt0psk2 xe8uvvx xdj266r x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x16tdsg8 x1hl2dhg xggy1nq x1a2a7pz xt0b8zv xzsf02u x1s688f']")
-            
-            seemore_btn.click()
+    time.sleep(random.randint(10,20))
 
-            time.sleep(random.randint(10,20))
+    post_text = driver.find_element(By.CSS_SELECTOR, "span[class='x193iq5w xeuugli x13faqbe x1vvkbs x1xmvt09 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x xudqn12 x3x7a5m x6prxxf xvq8zen xo1l8bm xzsf02u x1yc453h']").text
+    post_text = post_text.lower()
 
-        time.sleep(random.randint(10,20))
+    print(post_text)
 
-        post_text = driver.find_element(By.CSS_SELECTOR, "span[class='x193iq5w xeuugli x13faqbe x1vvkbs x1xmvt09 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x xudqn12 x3x7a5m x6prxxf xvq8zen xo1l8bm xzsf02u x1yc453h']").text
-        post_text = post_text.lower()
+    for keyword in keywords:
+        if keyword in post_text:
+            found = True
+            keywords_found.append(keyword)
 
-        for keyword in keywords:
-            if keyword in post_text:
-                found = True
-                keywords_found.append(keyword)
+    if found:
+        post_url = driver.current_url
+        list_str = post_url.split("/")
 
-        if found:
-            post_url = driver.current_url
-            list_str = post_url.split("/")
+        post = list_str[5]
+        list_post = post.split("=")
+        post_id = list_post[1].split("%")
+        post_id = post_id[0].split("&")
+        post_id = post_id[0]
 
-            post = list_str[5]
-            list_post = post.split("=")
-            post_id = list_post[1].split("%")
-            post_id = post_id[0].split("&")
-            post_id = post_id[0]
+        msg = f'Tìm thấy từ khóa "{keywords_found}" trong bài viết "{post_id}" tại group: {list_str[4]} \nNội dung bài viết:\n{post_text}'
 
-            msg = f'Tìm thấy từ khóa "{keywords_found}" trong bài viết "{post_id}" tại group: {list_str[4]} \nNội dung bài viết:\n{post_text}'
+        print(msg)
 
-            print(msg)
-
-            return msg
-        else:
-            return None
-
-    except:
+        return msg
+    else:
         return None
 
 
@@ -210,16 +212,22 @@ login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
 driver.get(notifications_url)
 
 while True:
+    time.sleep(random.randint(1,5))
     try:
         msg = notifications_listener()
         if msg:
-            send_notification_mail(sender_email, pwd_email, receiver_email, msg)
+                try:
+                    func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, msg))
+                except func_timeout.FunctionTimedOut:
+                    print("Gửi mail thất bại")
+            
         time.sleep(3)
         goto_notifications_page()
         time.sleep(5)
 
     except:
-        pass
+        driver.get(notifications_url)
+        time.sleep(random.randint(30,60))
 
 
 
