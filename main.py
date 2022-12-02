@@ -151,38 +151,33 @@ def notifications_listener():
     unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div/span/span')
     unread_btn.click()
 
-    time.sleep(random.randint(10,20))
+    time.sleep(random.randint(10,15))
     news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
     news_btn.click()
-    time.sleep(random.randint(10,20))
-    post_text = driver.find_element(By.CSS_SELECTOR, "span[class='x193iq5w xeuugli x13faqbe x1vvkbs x10flsy6 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x4zkp8e x41vudc x6prxxf xvq8zen xo1l8bm xzsf02u x1yc453h']").text.lower()
+    time.sleep(random.randint(10,15))
 
-    time.sleep(random.randint(10,20))
-    if "more" in post_text:
-        seemore_btn = driver.find_element(By.CSS_SELECTOR, "div[class='x1i10hfl xjbqb8w x6umtig x1b1mbwd xaqea5y xav7gou x9f619 x1ypdohk xt0psk2 xe8uvvx xdj266r x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x16tdsg8 x1hl2dhg xggy1nq x1a2a7pz xt0b8zv xzsf02u x1s688f']")
-        
-        seemore_btn.click()
+    post_url = driver.current_url
+    list_str = post_url.split("/")
 
-        time.sleep(random.randint(2,5))
-        post_text = driver.find_element(By.CSS_SELECTOR, "span[class='x193iq5w xeuugli x13faqbe x1vvkbs x10flsy6 x1lliihq x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x4zkp8e x41vudc x6prxxf xvq8zen xo1l8bm xzsf02u x1yc453h']").text.lower()
+    post = list_str[5]
+    list_post = post.split("=")
+    post_id = list_post[1].split("%")
+    post_id = post_id[0].split("&")
+    post_id = post_id[0]
 
+    driver.get(f"https://www.facebook.com/{post_id}")
+    
+    time.sleep(random.randint(10,15))
+
+    post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]/div').text.lower().replace('\n', '-') 
     print(post_text)
-
+    print("------------------------------")
     for keyword in keywords:
         if keyword in post_text:
             found = True
             keywords_found.append(keyword)
 
     if found:
-        post_url = driver.current_url
-        list_str = post_url.split("/")
-
-        post = list_str[5]
-        list_post = post.split("=")
-        post_id = list_post[1].split("%")
-        post_id = post_id[0].split("&")
-        post_id = post_id[0]
-
         msg = f'Tìm thấy từ khóa "{keywords_found}" trong bài viết "{post_id}" tại group: {list_str[4]} \nNội dung bài viết:\n{post_text}'
 
         print(msg)
@@ -195,9 +190,14 @@ def notifications_listener():
 
 def goto_notifications_page():
     try:
-        see_all_link = driver.find_element(By.CSS_SELECTOR, "a[class='x1i10hfl x1qjc9v5 xjqpnuy xa49m3k xqeqjp1 x2hbi6w x13fuv20 xu3j5b3 x1q0q8m5 x26u7qi x972fbf xcfux6l x1qhh985 xm0m39n x9f619 xdl72j9 x2lah0s xe8uvvx x2lwn1j xeuugli x16tdsg8 xggy1nq x1ja2u2z x1t137rt x1q0g3np x87ps6o x1lku1pv x1a2a7pz x1fey0fg x1ypdohk x92akz8 x1k74hu9 x76ihet xwmqs3e x112ta8 xxxdfa6 x1lcm9me x1yr5g0i xrt01vj x10y3i5r x1rg5ohu xdj266r x11i5rnm xat24cr x1mh8g0r xexx8yu x4uap5 x18d9i69 xkhd6sd x1n2onr6 x3ajldb actionChildElement']")
+        noti_link = driver.find_element(By.XPATH, "/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div[1]/div[1]/span/span/div/a")
 
-        see_all_link.click()
+        noti_link.click()
+
+        time.sleep(3)
+
+        seeall_link = driver.find_element(By.XPATH, "/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div[2]/div/div/div[1]/div[1]/div/div/div/div/div/div/div[1]/div[3]/div[2]/div/div/div[1]/div/div/div/div/div/div/span/div/div[2]/div/div[2]/div/a/span/span")
+        seeall_link.click()
     except:
         driver.get(notifications_url)
 
@@ -207,7 +207,11 @@ login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
 
 driver.get(notifications_url)
 
+count_post = 0
 while True:
+    count_post += 1
+    print(f"Đang kiểm tra bài viết số: {count_post}")
+    print("***")
     time.sleep(random.randint(1,5))
     try:
         msg = notifications_listener()
@@ -224,6 +228,3 @@ while True:
     except:
         driver.get(notifications_url)
         time.sleep(random.randint(30,60))
-
-
-
