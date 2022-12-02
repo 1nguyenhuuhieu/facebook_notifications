@@ -26,7 +26,14 @@ def load_keywords(file_path):
 
 config = init()
 
-driver_filepath = config["DRIVER"]["file_path"]
+operation_system = "0"
+while operation_system != "1" or operation_system != "2":
+    operation_system = input("Lựa chọn môi trường(1:Windows, 2:Linux): ")
+
+if operation_system == "1":
+    driver_filepath = config["DRIVER"]["windows"]
+elif operation_system == "2":
+    driver_filepath = config["DRIVER"]["linux"]
 
 home_url = config["FACEBOOK"]["home_url"]
 notifications_url = config["FACEBOOK"]["notifications_url"]
@@ -69,9 +76,13 @@ def send_notification_mail(sender, pwd, receiver, email_content):
 
     return None
 
+
+# Khởi tạo chrome driver với: maximize cửa sổ, disable thông báo đẩy, disable images hiển thị
 def init_driver(driver_filepath):
     chrome_options = webdriver.ChromeOptions()
-    prefs = {"profile.default_content_setting_values.notifications" : 2}
+    prefs = {"profile.default_content_setting_values.notifications" : 2,
+            "profile.managed_default_content_settings.images": 2
+    }
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_experimental_option("prefs",prefs)
     
