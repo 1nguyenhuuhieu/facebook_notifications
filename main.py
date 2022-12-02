@@ -31,9 +31,9 @@ operation_system = "0"
 while operation_system != "1" and operation_system != "2":
     operation_system = input("Lựa chọn môi trường(1:Windows, 2:Linux): ")
 
-if operation_system == "2":
+if operation_system == "1":
     driver_filepath = config["DRIVER"]["windows"]
-elif operation_system == "1":
+elif operation_system == "2":
     driver_filepath = config["DRIVER"]["linux"]
 
 home_url = config["FACEBOOK"]["home_url"]
