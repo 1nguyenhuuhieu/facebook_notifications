@@ -169,9 +169,7 @@ def notifications_listener():
     
     time.sleep(random.randint(10,15))
 
-    post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]/div').text.lower().replace('\n', '-') 
-    print(post_text)
-    print("------------------------------")
+    post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]/div').text.lower().replace('\n', '-')
     for keyword in keywords:
         if keyword in post_text:
             found = True
