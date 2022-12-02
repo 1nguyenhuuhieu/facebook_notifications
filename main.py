@@ -27,7 +27,7 @@ def load_keywords(file_path):
 config = init()
 
 operation_system = "0"
-while operation_system != "1" or operation_system != "2":
+while operation_system != "1" and operation_system != "2":
     operation_system = input("Lựa chọn môi trường(1:Windows, 2:Linux): ")
 
 if operation_system == "1":
