@@ -146,15 +146,13 @@ def notifications_listener():
     time.sleep(3)
     found = False
     keywords_found = []
-  
-    time.sleep(random.randint(10,20))
     unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div/span/span')
     unread_btn.click()
 
-    time.sleep(random.randint(10,15))
+    time.sleep(random.randint(3,5))
     news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
     news_btn.click()
-    time.sleep(random.randint(10,15))
+    time.sleep(random.randint(5,7))
 
     post_url = driver.current_url
     list_str = post_url.split("/")
@@ -167,7 +165,7 @@ def notifications_listener():
 
     driver.get(f"https://www.facebook.com/{post_id}")
     
-    time.sleep(random.randint(10,15))
+    time.sleep(random.randint(5,7))
 
     post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]/div').text.lower().replace('\n', '-')
     for keyword in keywords:
@@ -218,8 +216,6 @@ while True:
                     func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, msg))
                 except func_timeout.FunctionTimedOut:
                     print("Gửi mail thất bại")
-            
-        time.sleep(3)
         goto_notifications_page()
         time.sleep(5)
 
