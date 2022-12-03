@@ -12,7 +12,7 @@ import func_timeout
 from email.message import EmailMessage
 
 from datetime import date
-
+from datetime import datetime
 
 # khởi tạo thông tin từ file config
 def init():
@@ -145,9 +145,9 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
 
 
 def notifications_listener():
-    today = date.today()
+    
     time.sleep(3)
-    found = False
+    status = "notfound"
     keywords_found = []
     unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div/span/span')
     unread_btn.click()
@@ -165,6 +165,7 @@ def notifications_listener():
     post_id = list_post[1].split("%")
     post_id = post_id[0].split("&")
     post_id = post_id[0]
+    group = list_str[4]
 
     driver.get(f"https://www.facebook.com/{post_id}")
     
@@ -176,41 +177,30 @@ def notifications_listener():
         try:
             post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]/div').text.lower().replace('\n', '-')
         except:
+            status = "error"
+            post_text = ""
             print(f"Không lấy được bài viết tại group: {list_str[4]}")
-            return None
 
     for keyword in keywords:
         if keyword in post_text:
-            found = True
+            status = "found"
             keywords_found.append(keyword)
 
-    if found:
+    if status == "found":
         msg = f'Tìm thấy từ khóa "{keywords_found}" trong bài viết "{post_id}" tại group: {list_str[4]} \nNội dung bài viết:\n{post_text}'
-
-        pre_file = "found"
-        content_file = msg
-
-        post_file = open(f"./logs/found/{today}/found-{today}-{post_id}.txt", "w")
-        post_file.write(msg)
-        post_file.close()
-
         print(msg)
-
-        return msg
     else:
         print(post_text)
 
-        pre_file = "notfound"
-        content_file = str(post_text)
+    result = {
+        "status": status,
+        "keywords_found": keywords_found,
+        "group": group,
+        "post_id": post_id,
+        "post_text": post_text   
+    }
 
-    file_path = f"./logs/{pre_file}/notfound-{today}-{post_id}.txt"
-
-    with open(file_path, "w", encoding='utf-8') as text_file:
-        text_file.write(content_file)
-
-    return None
-
-
+    return result
 
 def goto_notifications_page():
     try:
@@ -225,25 +215,46 @@ def goto_notifications_page():
     except:
         driver.get(notifications_url)
 
+
+def write_log(file_path, file_content):
+    with open(file_path, "a", encoding='utf-8') as text_file:
+        json.dump(file_content, text_file)
+
+    return None
+
 driver = init_driver(driver_filepath)
 login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
-
 
 driver.get(notifications_url)
 
 count_post = 0
+
+
 while True:
+    today = date.today()
     count_post += 1
     print("***")
     print(f"Đang kiểm tra bài viết số: {count_post}")
     time.sleep(random.randint(1,5))
     try:
-        msg = notifications_listener()
-        if msg:
-                try:
-                    func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, msg))
-                except func_timeout.FunctionTimedOut:
-                    print("Gửi mail thất bại")
+        listener_post = notifications_listener()
+        if listener_post["status"] == "found":
+            try:
+                func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, listener_post))
+            except func_timeout.FunctionTimedOut:
+                print("Gửi mail thất bại")
+            
+
+        log_file_path = f"{listener_post['status']}-{today}-{listener_post['post_id']}.json"
+       
+        write_log(log_file_path, listener_post )
+
+        total_logs_file_path = f"logs-{today}"
+
+        with open(total_logs_file_path, "a", encoding='utf-8') as text_file:
+            now = datetime.now()
+            text_file.write(f"Checked: {count_post}, Time: {now} , Status: {listener_post['status']}, Post ID: {listener_post['post_id']}, Group: {listener_post['group']} ")
+
         goto_notifications_page()
         time.sleep(5)
 
