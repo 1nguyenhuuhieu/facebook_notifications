@@ -192,12 +192,15 @@ def notifications_listener():
     else:
         print(post_text)
 
+    now = datetime.now()
+
     result = {
         "status": status,
         "keywords_found": keywords_found,
         "group": group,
         "post_id": post_id,
-        "post_text": post_text   
+        "post_text": post_text,
+        "checked_time"   : now
     }
 
     return result
@@ -217,8 +220,10 @@ def goto_notifications_page():
 
 
 def write_log(file_path, file_content):
+    json_object = json.dumps(file_content, indent=4, ensure_ascii=False)
     with open(file_path, "a", encoding='utf-8') as text_file:
-        json.dump(file_content, text_file)
+        text_file.write(json_object)
+        text_file.write(',')
 
     return None
 
@@ -245,15 +250,15 @@ while True:
                 print("Gửi mail thất bại")
             
 
-        log_file_path = f"{listener_post['status']}-{today}-{listener_post['post_id']}.json"
+        log_file_path = f"logs/{listener_post['status']}-{today}.json"
        
-        write_log(log_file_path, listener_post )
+        write_log(log_file_path, listener_post)
 
-        total_logs_file_path = f"logs-{today}"
+        total_logs_file_path = f"logs/logs-{today}.txt"
 
         with open(total_logs_file_path, "a", encoding='utf-8') as text_file:
             now = datetime.now()
-            text_file.write(f"Checked: {count_post}, Time: {now} , Status: {listener_post['status']}, Post ID: {listener_post['post_id']}, Group: {listener_post['group']} ")
+            text_file.write(f"Status: {listener_post['status']}, Checked: {count_post}, Time: {now} ,  Post ID: {listener_post['post_id']}, Group: {listener_post['group']} \n")
 
         goto_notifications_page()
         time.sleep(5)
