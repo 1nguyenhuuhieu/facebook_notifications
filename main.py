@@ -144,7 +144,7 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
     return None
 
 
-def notifications_listener():
+def notifications_listener(driver):
     
     time.sleep(3)
     status = "notfound"
@@ -192,7 +192,7 @@ def notifications_listener():
     else:
         print(post_text)
 
-    now = datetime.now()
+    now = str(datetime.now())
 
     result = {
         "status": status,
@@ -200,12 +200,12 @@ def notifications_listener():
         "group": group,
         "post_id": post_id,
         "post_text": post_text,
-        "checked_time"   : now
+        "checked_time": now
     }
 
     return result
 
-def goto_notifications_page():
+def goto_notifications_page(driver):
     try:
         noti_link = driver.find_element(By.XPATH, "/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div[1]/div[1]/span/span/div/a")
 
@@ -227,42 +227,50 @@ def write_log(file_path, file_content):
 
     return None
 
-driver = init_driver(driver_filepath)
-login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
-
-driver.get(notifications_url)
-
-count_post = 0
 
 
-while True:
-    today = date.today()
-    count_post += 1
-    print("***")
-    print(f"Đang kiểm tra bài viết số: {count_post}")
-    time.sleep(random.randint(1,5))
-    try:
-        listener_post = notifications_listener()
-        if listener_post["status"] == "found":
+
+def main():
+    driver = init_driver(driver_filepath)
+    login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
+
+    driver.get(notifications_url)
+
+    count_post = 0
+    while True:
+        today = date.today()
+        count_post += 1
+        print("***")
+        print(f"Đang kiểm tra bài viết số: {count_post}")
+        time.sleep(random.randint(1,5))
+        try:
+            listener_post = notifications_listener(driver)
+            if listener_post["status"] == "found":
+                try:
+                    func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, listener_post))
+                except func_timeout.FunctionTimedOut:
+                    print("Gửi mail thất bại")
+                
+
+            log_file_path = f"logs/{listener_post['status']}-{today}.json"
+
             try:
-                func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, listener_post))
-            except func_timeout.FunctionTimedOut:
-                print("Gửi mail thất bại")
-            
+                write_log(log_file_path, listener_post)
+            except:
+                pass
 
-        log_file_path = f"logs/{listener_post['status']}-{today}.json"
-       
-        write_log(log_file_path, listener_post)
+            total_logs_file_path = f"logs/logs-{today}.txt"
 
-        total_logs_file_path = f"logs/logs-{today}.txt"
+            with open(total_logs_file_path, "a", encoding='utf-8') as text_file:
+                now = datetime.now()
+                text_file.write(f"Status: {listener_post['status']}, Checked: {count_post}, Time: {now} ,  Post ID: {listener_post['post_id']}, Group: {listener_post['group']} \n")
 
-        with open(total_logs_file_path, "a", encoding='utf-8') as text_file:
-            now = datetime.now()
-            text_file.write(f"Status: {listener_post['status']}, Checked: {count_post}, Time: {now} ,  Post ID: {listener_post['post_id']}, Group: {listener_post['group']} \n")
+            goto_notifications_page(driver)
+            time.sleep(5)
 
-        goto_notifications_page()
-        time.sleep(5)
+        except:
+            driver.get(notifications_url)
+            time.sleep(random.randint(180,300))
 
-    except:
-        driver.get(notifications_url)
-        time.sleep(random.randint(30,60))
+
+main()

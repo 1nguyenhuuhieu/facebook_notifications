@@ -1,0 +1,3 @@
+Status: notfound, Checked: 1, Time: 2022-12-03 23:58:29.081910 ,  Post ID: 9001521449872978, Group: batdongsanhanoigiagoc 
+Status: notfound, Checked: 2, Time: 2022-12-03 23:59:19.700362 ,  Post ID: 5749132308499086, Group: 4001288313283503 
+Status: error, Checked: 3, Time: 2022-12-04 00:00:10.626775 ,  Post ID: 902871507547568, Group: 286899469144778 
