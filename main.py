@@ -20,23 +20,17 @@ def init():
     config.read('config.ini', encoding='utf-8')
     return config
 
-def load_keywords(file_path):
+def load_json_file(file_path):
     file = open(file_path, encoding='utf-8')
-    keywords_json = json.load(file)
+    items_json = json.load(file)
     file.close()
 
-    return [keyword for keyword in keywords_json.values()]
+    return [item for item in items_json.values()]
 
 config = init()
 
-operation_system = "0"
-while operation_system != "1" and operation_system != "2":
-    operation_system = input("Lựa chọn môi trường(1:Windows, 2:Linux): ")
+driver_filepath = config["DRIVER"]["windows"]
 
-if operation_system == "1":
-    driver_filepath = config["DRIVER"]["windows"]
-elif operation_system == "2":
-    driver_filepath = config["DRIVER"]["linux"]
 
 home_url = config["FACEBOOK"]["home_url"]
 notifications_url = config["FACEBOOK"]["notifications_url"]
@@ -52,10 +46,16 @@ receiver_email = config["EMAIL"]["receiver"]
 
 keyword_filepath = config["KEYWORDS"]["file_path"]
 
+groups_filepath = config["GROUPS"]["file_path"]
+
 #load keywords từ file json
-keywords = load_keywords(keyword_filepath)
+keywords = load_json_file(keyword_filepath)
+
+#load group từ file json
+groups = load_json_file(groups_filepath)
 
 print(keywords)
+print(groups)
 
 
 # Gửi mail sử dụng application pwd của gmail
@@ -170,12 +170,15 @@ def notifications_listener():
     
     time.sleep(random.randint(10,15))
     try:
-        post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]/div').text.lower().replace('\n', '-')
-    except:
-        print("Không lấy được bài viết")
-        pass
+        post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]').text.lower().replace('\n', '-')
 
-    
+    except:
+        try:
+            post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]/div').text.lower().replace('\n', '-')
+        except:
+            print(f"Không lấy được bài viết tại group: {list_str[4]}")
+            return None
+
     for keyword in keywords:
         if keyword in post_text:
             found = True
@@ -184,7 +187,10 @@ def notifications_listener():
     if found:
         msg = f'Tìm thấy từ khóa "{keywords_found}" trong bài viết "{post_id}" tại group: {list_str[4]} \nNội dung bài viết:\n{post_text}'
 
-        post_file = open(f"./logs/found/{today}/found-{today}-{post_id}.txt", "x")
+        pre_file = "found"
+        content_file = msg
+
+        post_file = open(f"./logs/found/{today}/found-{today}-{post_id}.txt", "w")
         post_file.write(msg)
         post_file.close()
 
@@ -193,10 +199,16 @@ def notifications_listener():
         return msg
     else:
         print(post_text)
-        post_file = open(f"./logs/notfound/notfound-{today}-{post_id}.txt", "x")
-        post_file.write(post_text)
-        post_file.close()
-        return None
+
+        pre_file = "notfound"
+        content_file = str(post_text)
+
+    file_path = f"./logs/{pre_file}/notfound-{today}-{post_id}.txt"
+
+    with open(file_path, "w", encoding='utf-8') as text_file:
+        text_file.write(content_file)
+
+    return None
 
 
 
