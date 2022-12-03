@@ -11,6 +11,8 @@ import smtplib
 import func_timeout
 from email.message import EmailMessage
 
+from datetime import date
+
 
 # khởi tạo thông tin từ file config
 def init():
@@ -143,6 +145,7 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
 
 
 def notifications_listener():
+    today = date.today()
     time.sleep(3)
     found = False
     keywords_found = []
@@ -152,7 +155,7 @@ def notifications_listener():
     time.sleep(random.randint(3,5))
     news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
     news_btn.click()
-    time.sleep(random.randint(5,7))
+    time.sleep(random.randint(15,20))
 
     post_url = driver.current_url
     list_str = post_url.split("/")
@@ -165,9 +168,14 @@ def notifications_listener():
 
     driver.get(f"https://www.facebook.com/{post_id}")
     
-    time.sleep(random.randint(5,7))
+    time.sleep(random.randint(10,15))
+    try:
+        post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]/div').text.lower().replace('\n', '-')
+    except:
+        print("Không lấy được bài viết")
+        pass
 
-    post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]/div').text.lower().replace('\n', '-')
+    
     for keyword in keywords:
         if keyword in post_text:
             found = True
@@ -176,10 +184,18 @@ def notifications_listener():
     if found:
         msg = f'Tìm thấy từ khóa "{keywords_found}" trong bài viết "{post_id}" tại group: {list_str[4]} \nNội dung bài viết:\n{post_text}'
 
+        post_file = open(f"./logs/found/{today}/found-{today}-{post_id}.txt", "x")
+        post_file.write(msg)
+        post_file.close()
+
         print(msg)
 
         return msg
     else:
+        print(post_text)
+        post_file = open(f"./logs/notfound/notfound-{today}-{post_id}.txt", "x")
+        post_file.write(post_text)
+        post_file.close()
         return None
 
 
@@ -204,21 +220,21 @@ login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
 driver.get(notifications_url)
 
 count_post = 0
-# while True:
-#     count_post += 1
-#     print(f"Đang kiểm tra bài viết số: {count_post}")
-#     print("***")
-#     time.sleep(random.randint(1,5))
-#     try:
-#         msg = notifications_listener()
-#         if msg:
-#                 try:
-#                     func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, msg))
-#                 except func_timeout.FunctionTimedOut:
-#                     print("Gửi mail thất bại")
-#         goto_notifications_page()
-#         time.sleep(5)
+while True:
+    count_post += 1
+    print("***")
+    print(f"Đang kiểm tra bài viết số: {count_post}")
+    time.sleep(random.randint(1,5))
+    try:
+        msg = notifications_listener()
+        if msg:
+                try:
+                    func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, msg))
+                except func_timeout.FunctionTimedOut:
+                    print("Gửi mail thất bại")
+        goto_notifications_page()
+        time.sleep(5)
 
-#     except:
-#         driver.get(notifications_url)
-#         time.sleep(random.randint(30,60))
+    except:
+        driver.get(notifications_url)
+        time.sleep(random.randint(30,60))
