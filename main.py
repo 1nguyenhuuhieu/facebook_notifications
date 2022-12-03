@@ -204,21 +204,21 @@ login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
 driver.get(notifications_url)
 
 count_post = 0
-while True:
-    count_post += 1
-    print(f"Đang kiểm tra bài viết số: {count_post}")
-    print("***")
-    time.sleep(random.randint(1,5))
-    try:
-        msg = notifications_listener()
-        if msg:
-                try:
-                    func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, msg))
-                except func_timeout.FunctionTimedOut:
-                    print("Gửi mail thất bại")
-        goto_notifications_page()
-        time.sleep(5)
+# while True:
+#     count_post += 1
+#     print(f"Đang kiểm tra bài viết số: {count_post}")
+#     print("***")
+#     time.sleep(random.randint(1,5))
+#     try:
+#         msg = notifications_listener()
+#         if msg:
+#                 try:
+#                     func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, msg))
+#                 except func_timeout.FunctionTimedOut:
+#                     print("Gửi mail thất bại")
+#         goto_notifications_page()
+#         time.sleep(5)
 
-    except:
-        driver.get(notifications_url)
-        time.sleep(random.randint(30,60))
+#     except:
+#         driver.get(notifications_url)
+#         time.sleep(random.randint(30,60))
