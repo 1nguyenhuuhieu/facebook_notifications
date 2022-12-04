@@ -241,9 +241,6 @@ def write_log(file_path, file_content):
 
     return None
 
-
-
-
 driver = init_driver(driver_filepath)
 login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
 def main(driver):

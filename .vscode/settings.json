@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "test",
+            "database": "${workspaceFolder:facebook_notifications}/fb.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
