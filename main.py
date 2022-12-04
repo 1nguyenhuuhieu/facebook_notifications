@@ -290,7 +290,7 @@ def main(driver):
 
         except:
             driver.get(notifications_url)
-            time.sleep(random.randint(180,300))
+            time.sleep(random.randint(60,100))
 
 
 main(driver)
