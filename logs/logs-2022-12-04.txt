@@ -167,3 +167,5 @@ Status: notfound, Checked: 3, Time: 2022-12-04 07:13:50.279799 ,  Post ID: 35187
 Status: notfound, Checked: 1, Time: 2022-12-04 14:13:38.402218+07:00 ,  Post ID: 5545042368949355, Group: 3260883254031956 
 Status: found, Checked: 1, Time: 2022-12-04 14:32:12.677035+07:00 ,  Post ID: 6152772048066367, Group: 1361900573820229 
 Status: found, Checked: 1, Time: 2022-12-04 14:33:58.263377+07:00 ,  Post ID: 1537140480104812, Group: 562200234265513 
+Status: notfound, Checked: 1, Time: 2022-12-04 15:35:44.603715+07:00 ,  Post ID: 1537167693435424, Group: 562200234265513 
+Status: notfound, Checked: 2, Time: 2022-12-04 15:36:40.953843+07:00 ,  Post ID: 1848765482128325, Group: 597757723895780 

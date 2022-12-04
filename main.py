@@ -170,9 +170,6 @@ def notifications_listener(driver):
     with open(file_path, "a", encoding='utf-8') as text_file:
         text_file.write(f"Time clicked: {str(now)}, Notification URL: {str(driver.current_url)} \n")
         
-
-    time.sleep(random.randint(7,10))
-
     post_url = driver.current_url
     list_str = post_url.split("/")
 
@@ -184,8 +181,8 @@ def notifications_listener(driver):
     group = list_str[4]
 
     driver.get(f"https://www.facebook.com/{post_id}")
+    time.sleep(5)
     
-    time.sleep(random.randint(20,25))
     try:
         post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]').text.lower().replace('\n', '-')
 
@@ -256,6 +253,7 @@ def main(driver):
 
     count_post = 0
     while True:
+        
         today = datetime.now(vn_tz).date()
         count_post += 1
         print("***")
