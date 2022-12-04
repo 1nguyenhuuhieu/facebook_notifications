@@ -184,7 +184,7 @@ def notifications_listener(driver):
 
     driver.get(f"https://www.facebook.com/{post_id}")
     
-    time.sleep(random.randint(5,10))
+    time.sleep(random.randint(15,20))
     try:
         post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]').text.lower().replace('\n', '-')
 
