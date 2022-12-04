@@ -222,10 +222,9 @@ def goto_notifications_page(driver):
 def write_log(file_path, file_content):
     now = str(datetime.now())
     json_object = json.dumps(file_content, indent=4, ensure_ascii=False)
-    json_now_object = f"{now}: json_object "
+    json_now_object = f"{now}: {json_object} , "
     with open(file_path, "a", encoding='utf-8') as text_file:
         text_file.write(json_now_object)
-        text_file.write(',')
 
     return None
 

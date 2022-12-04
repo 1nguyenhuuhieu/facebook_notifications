@@ -157,3 +157,6 @@ Status: notfound, Checked: 5, Time: 2022-12-04 07:01:14.433322 ,  Post ID: 57279
 Status: notfound, Checked: 6, Time: 2022-12-04 07:01:59.013014 ,  Post ID: 6151931274817111, Group: 1361900573820229 
 Status: notfound, Checked: 7, Time: 2022-12-04 07:02:47.527959 ,  Post ID: 6151932658150306, Group: 1361900573820229 
 Status: notfound, Checked: 8, Time: 2022-12-04 07:03:37.295796 ,  Post ID: 5990780584286140, Group: batdongsan40.com.vn.hanoi 
+Status: notfound, Checked: 1, Time: 2022-12-04 07:05:47.023406 ,  Post ID: 6151937254816513, Group: 1361900573820229 
+Status: notfound, Checked: 2, Time: 2022-12-04 07:06:39.835818 ,  Post ID: 5727976277309853, Group: 2436942816413232 
+Status: notfound, Checked: 3, Time: 2022-12-04 07:07:31.809167 ,  Post ID: 1097242817609554, Group: 302636283736882 
