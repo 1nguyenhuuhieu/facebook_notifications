@@ -15,9 +15,9 @@ from datetime import date
 from datetime import datetime
 
 # khởi tạo thông tin từ file config
-def init():
+def init(file_path):
     config = configparser.ConfigParser()
-    config.read('config.ini', encoding='utf-8')
+    config.read(file_path, encoding='utf-8')
     return config
 
 def load_json_file(file_path):
@@ -27,7 +27,8 @@ def load_json_file(file_path):
 
     return [item for item in items_json.values()]
 
-config = init()
+file_path = "config.ini"
+config = init(file_path)
 
 driver_filepath = config["DRIVER"]["windows"]
 
@@ -155,7 +156,7 @@ def notifications_listener(driver):
     time.sleep(random.randint(3,5))
     news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
     news_btn.click()
-    time.sleep(random.randint(15,20))
+    time.sleep(random.randint(7,10))
 
     post_url = driver.current_url
     list_str = post_url.split("/")
@@ -169,7 +170,7 @@ def notifications_listener(driver):
 
     driver.get(f"https://www.facebook.com/{post_id}")
     
-    time.sleep(random.randint(10,15))
+    time.sleep(random.randint(5,10))
     try:
         post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]').text.lower().replace('\n', '-')
 
