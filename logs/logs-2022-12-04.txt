@@ -149,3 +149,11 @@ Status: notfound, Checked: 199, Time: 2022-12-04 06:35:10.487392 ,  Post ID: 118
 Status: notfound, Checked: 200, Time: 2022-12-04 06:36:00.307270 ,  Post ID: 903057064195679, Group: 286899469144778 
 Status: notfound, Checked: 201, Time: 2022-12-04 06:36:47.093311 ,  Post ID: 1181291032488505, Group: bdsbavisontay 
 Status: notfound, Checked: 202, Time: 2022-12-04 06:37:38.847554 ,  Post ID: 683084366854739, Group: 286236723206174 
+Status: notfound, Checked: 1, Time: 2022-12-04 06:57:48.117742 ,  Post ID: 1097239454276557, Group: 302636283736882 
+Status: notfound, Checked: 2, Time: 2022-12-04 06:58:38.283086 ,  Post ID: 618259963386846, Group: 384335626779282 
+Status: notfound, Checked: 3, Time: 2022-12-04 06:59:28.214909 ,  Post ID: 1181300142487594, Group: bdsbavisontay 
+Status: notfound, Checked: 4, Time: 2022-12-04 07:00:19.593909 ,  Post ID: 1848493208822219, Group: 597757723895780 
+Status: notfound, Checked: 5, Time: 2022-12-04 07:01:14.433322 ,  Post ID: 5727967663977381, Group: 2436942816413232 
+Status: notfound, Checked: 6, Time: 2022-12-04 07:01:59.013014 ,  Post ID: 6151931274817111, Group: 1361900573820229 
+Status: notfound, Checked: 7, Time: 2022-12-04 07:02:47.527959 ,  Post ID: 6151932658150306, Group: 1361900573820229 
+Status: notfound, Checked: 8, Time: 2022-12-04 07:03:37.295796 ,  Post ID: 5990780584286140, Group: batdongsan40.com.vn.hanoi 
