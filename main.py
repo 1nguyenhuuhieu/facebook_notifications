@@ -246,13 +246,7 @@ def main():
         time.sleep(random.randint(1,5))
         try:
             listener_post = notifications_listener(driver)
-            if listener_post["status"] == "found":
-                try:
-                    email_content = str(listener_post)
-                    func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, email_content))
-                except func_timeout.FunctionTimedOut:
-                    print("Gửi mail thất bại")
-                
+
 
             log_file_path = f"logs/{listener_post['status']}-{today}.json"
 
@@ -260,12 +254,21 @@ def main():
                 write_log(log_file_path, listener_post)
             except:
                 pass
+           
+            try:
+                total_logs_file_path = f"logs/logs-{today}.txt"
+                with open(total_logs_file_path, "a", encoding='utf-8') as text_file:
+                    now = datetime.now()
+                    text_file.write(f"Status: {listener_post['status']}, Checked: {count_post}, Time: {now} ,  Post ID: {listener_post['post_id']}, Group: {listener_post['group']} \n")
+            except:
+                pass
 
-            total_logs_file_path = f"logs/logs-{today}.txt"
-
-            with open(total_logs_file_path, "a", encoding='utf-8') as text_file:
-                now = datetime.now()
-                text_file.write(f"Status: {listener_post['status']}, Checked: {count_post}, Time: {now} ,  Post ID: {listener_post['post_id']}, Group: {listener_post['group']} \n")
+            if listener_post["status"] == "found":
+                try:
+                    email_content = str(listener_post)
+                    func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, email_content))
+                except func_timeout.FunctionTimedOut:
+                    print("Gửi mail thất bại")                
 
             goto_notifications_page(driver)
             time.sleep(5)
