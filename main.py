@@ -162,6 +162,7 @@ def notifications_listener(driver):
     time.sleep(random.randint(3,5))
     news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
     news_btn.click()
+    time.sleep(5)
 
     # ghi notification đã xem vào logs
     now_date = str(datetime.now(vn_tz).date())
@@ -184,7 +185,7 @@ def notifications_listener(driver):
 
     driver.get(f"https://www.facebook.com/{post_id}")
     
-    time.sleep(random.randint(15,20))
+    time.sleep(random.randint(20,25))
     try:
         post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div/div/div/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div[8]').text.lower().replace('\n', '-')
 
