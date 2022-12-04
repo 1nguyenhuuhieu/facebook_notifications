@@ -281,7 +281,7 @@ def main(driver):
 
             if listener_post["status"] == "found":
                 try:
-                    email_content = str(listener_post)
+                    email_content = json.dumps(listener_post, indent=4, ensure_ascii=False)
                     func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, email_content))
                 except func_timeout.FunctionTimedOut:
                     print("Gửi mail thất bại")                
