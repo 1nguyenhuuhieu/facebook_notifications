@@ -1,5 +1,6 @@
 import configparser
 
+
 import json
 import time
 import random
@@ -11,8 +12,11 @@ import smtplib
 import func_timeout
 from email.message import EmailMessage
 
+import pytz
 from datetime import date
 from datetime import datetime
+
+vn_tz = pytz.timezone('Asia/Ho_Chi_Minh')
 
 # khởi tạo thông tin từ file config
 def init(file_path):
@@ -146,6 +150,8 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
 
 
 def notifications_listener(driver):
+
+    now = str(datetime.now(vn_tz))
     
     time.sleep(3)
     status = "notfound"
@@ -156,6 +162,14 @@ def notifications_listener(driver):
     time.sleep(random.randint(3,5))
     news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
     news_btn.click()
+
+    # ghi notification đã xem vào logs
+    now_date = str(datetime.now(vn_tz).date())
+    file_path = f"logs/notifications-clicked-{now_date}.txt"
+    with open(file_path, "a", encoding='utf-8') as text_file:
+        text_file.write(f"Time clicked: {str(now)}, Notification URL: {str(driver.current_url)} \n")
+        
+
     time.sleep(random.randint(7,10))
 
     post_url = driver.current_url
@@ -193,7 +207,7 @@ def notifications_listener(driver):
     else:
         print(post_text)
 
-    now = str(datetime.now())
+    
 
     result = {
         "status": status,
@@ -221,7 +235,7 @@ def goto_notifications_page(driver):
 
 
 def write_log(file_path, file_content):
-    now = str(datetime.now())
+    now = str(datetime.now(vn_tz))
     json_object = json.dumps(file_content, indent=4, ensure_ascii=False)
     json_now_object = f'"{now}": {json_object} , '
     with open(file_path, "a", encoding='utf-8') as text_file:
@@ -232,15 +246,16 @@ def write_log(file_path, file_content):
 
 
 
-def main():
-    driver = init_driver(driver_filepath)
-    login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
+driver = init_driver(driver_filepath)
+login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
+def main(driver):
+
 
     driver.get(notifications_url)
 
     count_post = 0
     while True:
-        today = date.today()
+        today = datetime.now(vn_tz).date()
         count_post += 1
         print("***")
         print(f"Đang kiểm tra bài viết số: {count_post}")
@@ -259,7 +274,7 @@ def main():
             try:
                 total_logs_file_path = f"logs/logs-{today}.txt"
                 with open(total_logs_file_path, "a", encoding='utf-8') as text_file:
-                    now = datetime.now()
+                    now = datetime.now(vn_tz)
                     text_file.write(f"Status: {listener_post['status']}, Checked: {count_post}, Time: {now} ,  Post ID: {listener_post['post_id']}, Group: {listener_post['group']} \n")
             except:
                 pass
@@ -279,4 +294,4 @@ def main():
             time.sleep(random.randint(180,300))
 
 
-main()
+main(driver)
