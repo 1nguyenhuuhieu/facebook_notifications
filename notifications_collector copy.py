@@ -8,6 +8,8 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 
+import func_timeout
+
 import sqlite3
 
 # import hàm tự định nghĩa
@@ -79,10 +81,11 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
 
 def notifications_collector(driver):
     try:
-
-        unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div/span/span')
-        unread_btn.click()
-        time.sleep(3)
+        spans = driver.find_elements(By.TAG_NAME, 'span')
+        for span in spans:
+            if "Unread" in span.text: 
+                span.click()
+                time.sleep(3)
         
         news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
         news_btn.click()
@@ -107,45 +110,36 @@ def notifications_collector(driver):
         except:
             print("Lỗi")
 
-    except:
-        time.sleep(5)
-        reload_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div/div[3]/div/div')
-        reload_btn.click()
+        driver.back()
         time.sleep(3)
 
-        facebook_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[2]/div[1]/a/svg/path[1]')
-        facebook_btn.click()
+    except:
+        try:
+            spans = driver.find_elements(By.TAG_NAME, 'span')
+            reload_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div/div[3]/div/div')
+            a_elements = driver.find_elements(By.TAG_NAME, 'a')
+            for a in a_elements:
+                if "/notifications/" in a.get_attribute("href"):
+                    a.click()
+            time.sleep(2)
+            seeall_link = driver.find_element(By.PARTIAL_LINK_TEXT, "See all")
+            seeall_link.click()
+            time.sleep(2)
+        except:
+            driver.get(notifications_url)
     return None
-
-def goto_notifications_page(driver):
-    try:
-        noti_link = driver.find_element(By.XPATH, "/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div[1]/div[1]/span/span/div/a")
-
-        noti_link.click()
-
-        time.sleep(3)
-
-        seeall_link = driver.find_element(By.XPATH, "/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div[2]/div/div/div[1]/div[1]/div/div/div/div/div/div/div[1]/div[3]/div[2]/div/div/div[1]/div/div/div/div/div/div/span/div/div[2]/div/div[2]/div/a/span/span")
-        seeall_link.click()
-    except:
-        driver.get(notifications_url)
-
-
 
 driver = init_driver(driver_filepath)
 login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
 driver.get(notifications_url)
 count = 0
+
 while True:
-    print(count)
-    print("***")
+    print(f"Notification {count} seeing")
     count += 1
     time.sleep(3)
     try:
-        notifications_collector(driver)
-        goto_notifications_page(driver)
+        func_timeout.func_timeout(120, notifications_collector(driver))
     except:
-        time.sleep(300)
-    
+        driver.get(notifications_url)
     time.sleep(3)
-
