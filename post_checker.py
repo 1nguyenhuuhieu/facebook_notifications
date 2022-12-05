@@ -94,7 +94,7 @@ def post_checker(driver):
         post_id = res.fetchone()[0]
         cur.execute("DELETE FROM post WHERE post_id=:post_id", {"post_id": post_id})
         con.commit()
-        con.close()
+
 
         driver.get(f"{home_url}/{post_id}")
         time.sleep(5)
@@ -108,11 +108,16 @@ def post_checker(driver):
         keywords_found = []
 
         try:
-            post_text = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[4]/div/div[1]/div[1]/div/div/div[1]').text.lower().replace('\n', '-')
+            post_text = driver.find_element(By.XPATH, ' /html/body/div[1]/div/div[4]/div/div[1]/div[1]/div/div/div[1]').text.lower().replace('\n', '-')
+            
+
         except:
+            cur.execute("INSERT INTO post_broken VALUES (:post_id)", {"post_id": post_id})
+            con.commit()
             status = "error"
             post_text = ""
         
+        con.close()
         print(post_text)
         print("---")
 
@@ -173,7 +178,27 @@ def mobile_driver():
     for cookie in cookies:
         driver.add_cookie(cookie)
 
-    driver.refresh()
+    driver.get(home_url)
+    time.sleep(3)
+    
+    try:
+        account_link = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div[2]/div/div/div[1]/div/div')
+        account_link.click()
+        
+        time.sleep(3)
+
+        input_pwd = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[3]/div[1]/div/form/div[1]/div/div/div/div/div[1]/div/input')
+        input_pwd.send_keys(pwd_facebook)
+
+        time.sleep(5)
+
+        login_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[3]/div[1]/div/form/div[2]/button')
+        login_btn.click()
+        time.sleep(3)
+
+    except:
+        pass
+
     return driver
 
 
@@ -214,7 +239,6 @@ def main(driver):
             time.sleep(3)
 
         except:
-            driver.get(notifications_url)
             time.sleep(random.randint(60,100))
 
 

@@ -78,34 +78,43 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
     return False
 
 def notifications_collector(driver):
-
-    unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div/span/span')
-    unread_btn.click()
-    time.sleep(3)
-    
-    news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
-    news_btn.click()
-    time.sleep(5)
-
-    post_url = driver.current_url
-
-    # ghi notification đã xem vào logs
-    now = str(datetime.now(vn_tz))
-    now_date = str(datetime.now(vn_tz).date())
-    file_path = f"logs/notifications-clicked-{now_date}.txt"
-    with open(file_path, "a", encoding='utf-8') as text_file:
-        text_file.write(f"Time clicked: {str(now)}, Notification URL: {post_url} \n")
-        
-    post_id = post_url.split("/")[5].split("=")[1].split("%")[0].split("&")[0]
     try:
-        con = sqlite3.connect("fb.db")
-        cur = con.cursor()
-        cur.execute("INSERT INTO post VALUES (:post_id)", {"post_id": post_id})
-        con.commit()
-        con.close()
-    except:
-        print("Lỗi")
 
+        unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div/span/span')
+        unread_btn.click()
+        time.sleep(3)
+        
+        news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
+        news_btn.click()
+        time.sleep(5)
+
+        post_url = driver.current_url
+
+        # ghi notification đã xem vào logs
+        now = str(datetime.now(vn_tz))
+        now_date = str(datetime.now(vn_tz).date())
+        file_path = f"logs/notifications-clicked-{now_date}.txt"
+        with open(file_path, "a", encoding='utf-8') as text_file:
+            text_file.write(f"Time clicked: {str(now)}, Notification URL: {post_url} \n")
+            
+        post_id = post_url.split("/")[5].split("=")[1].split("%")[0].split("&")[0]
+        try:
+            con = sqlite3.connect("fb.db")
+            cur = con.cursor()
+            cur.execute("INSERT INTO post VALUES (:post_id)", {"post_id": post_id})
+            con.commit()
+            con.close()
+        except:
+            print("Lỗi")
+
+    except:
+        time.sleep(5)
+        reload_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div/div[3]/div/div')
+        reload_btn.click()
+        time.sleep(3)
+
+        facebook_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[2]/div[1]/a/svg/path[1]')
+        facebook_btn.click()
     return None
 
 def goto_notifications_page(driver):
