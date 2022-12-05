@@ -8,6 +8,8 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 
+import func_timeout
+
 import sqlite3
 
 # import hàm tự định nghĩa
@@ -79,20 +81,28 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
 
 def notifications_collector(driver):
     try:
-        unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div/span/span')
-        unread_btn.click()
+        now = str(datetime.now(vn_tz))
+        now_date = str(datetime.now(vn_tz).date())
+        file_path = f"logs/notifications-clicked-{now_date}.txt"
+
+        print("TRY NOTIFICATIONS PAGE")
+        print(now)
         time.sleep(3)
-        
+        unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div')
+        unread_btn.click()
+        print("unread clicked")
+
+        time.sleep(3)
         news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
         news_btn.click()
-        time.sleep(5)
+        print("notification clicked")
+        time.sleep(3)
 
         post_url = driver.current_url
 
         # ghi notification đã xem vào logs
-        now = str(datetime.now(vn_tz))
-        now_date = str(datetime.now(vn_tz).date())
-        file_path = f"logs/notifications-clicked-{now_date}.txt"
+        
+
         with open(file_path, "a", encoding='utf-8') as text_file:
             text_file.write(f"Time clicked: {str(now)}, Notification URL: {post_url} \n")
             
@@ -104,26 +114,30 @@ def notifications_collector(driver):
             con.commit()
             con.close()
         except:
-            print("Lỗi")
-
+            print("Lỗi khi thêm vào database")
 
         driver.back()
-        time.sleep(3)
+        print("back to notifications page")
+
 
     except:
-        time.sleep(3)
+        print("EXCEPT RELOAD PAGE")
         try:
             reload_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div/div[3]/div/div')
-            print("RELOAD PAGE")
             a_elements = driver.find_elements(By.TAG_NAME, 'a')
             for a in a_elements:
                 if "/notifications/" in a.get_attribute("href"):
                     a.click()
-            time.sleep(2)
-            seeall_link = driver.find_element(By.PARTIAL_LINK_TEXT, "See all")
-            seeall_link.click()
-            time.sleep(2)
+                    print("notifications clicked")
+                    time.sleep(3)
+                    seeall_link = driver.find_element(By.PARTIAL_LINK_TEXT, "See all")
+                    seeall_link.click()
+                    print("see all clicked")
+                    time.sleep(3)
+                    return None
         except:
+            print("EXCEPT NO NEW NOTIFICATION, wait 300s to recheck")
+            time.sleep(300)
             driver.get(notifications_url)
     return None
 
@@ -131,15 +145,16 @@ driver = init_driver(driver_filepath)
 login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
 driver.get(notifications_url)
 count = 0
-# while True:
-#     print(count)
-#     print("***")
-#     count += 1
-#     time.sleep(3)
-#     try:
-#         notifications_collector(driver)
-#     except:
-#         time.sleep(300)
-    
-#     time.sleep(3)
 
+while True:
+    print("-----")
+    print(f"Notification {count} seeing")
+    count += 1
+    time.sleep(3)
+    try:
+        notifications_collector(driver)
+    except:
+        print("EXCEPT TRUE")
+        time.sleep(3)
+        driver.get(notifications_url)
+    time.sleep(3)
