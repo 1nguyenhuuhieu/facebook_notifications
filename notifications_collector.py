@@ -8,13 +8,14 @@ from datetime import datetime
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 
-import func_timeout
-
 import sqlite3
+import random
 
 # import hàm tự định nghĩa
 from config import init
 
+
+time_sleep = random.randint(3, 6)
 
 vn_tz = pytz.timezone('Asia/Ho_Chi_Minh')
 
@@ -80,6 +81,7 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
     return False
 
 def notifications_collector(driver):
+    
     try:
         now = str(datetime.now(vn_tz))
         now_date = str(datetime.now(vn_tz).date())
@@ -87,16 +89,16 @@ def notifications_collector(driver):
 
         print("TRY NOTIFICATIONS PAGE")
         print(now)
-        time.sleep(3)
+        time.sleep(time_sleep)
         unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div')
         unread_btn.click()
         print("unread clicked")
 
-        time.sleep(3)
+        time.sleep(time_sleep)
         news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
         news_btn.click()
         print("notification clicked")
-        time.sleep(3)
+        time.sleep(time_sleep)
 
         post_url = driver.current_url
 
@@ -129,16 +131,56 @@ def notifications_collector(driver):
                 if "/notifications/" in a.get_attribute("href"):
                     a.click()
                     print("notifications clicked")
-                    time.sleep(3)
+                    time.sleep(time_sleep)
                     seeall_link = driver.find_element(By.PARTIAL_LINK_TEXT, "See all")
                     seeall_link.click()
                     print("see all clicked")
-                    time.sleep(3)
+                    time.sleep(time_sleep)
                     return None
         except:
             print("EXCEPT NO NEW NOTIFICATION, wait 300s to recheck")
-            time.sleep(300)
+            anti_fb_ai(driver)
+            time.sleep(30)
             driver.get(notifications_url)
+    return None
+
+def anti_fb_ai(driver):
+    driver.get(home_url)
+    time.sleep(time_sleep)
+    print("go to home page")
+
+    driver.execute_script("window.scrollTo(0, 1000)")
+    time.sleep(time_sleep)
+    driver.execute_script("window.scrollTo(0, 0)")
+
+    for i in range(random.randint(2,4)):
+        driver.get(home_url)
+        time.sleep(time_sleep)
+        like_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div[2]/div/div/div/div[3]/div/div[3]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div/div[8]/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]/div[1]')
+        like_btn.click()
+        time.sleep(time_sleep)
+    driver.get(home_url)
+    time.sleep(time_sleep)
+
+    
+    share = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div[2]/div/div/div/div[3]/div/div[3]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div/div[8]/div/div[4]/div/div/div[1]/div/div/div/div[3]/div/div[1]')
+    share.click()
+
+    time.sleep(time_sleep)
+    mess = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div[1]/div[2]/span/span/div/div[1]')
+    mess.click()
+
+    time.sleep(time_sleep)
+
+    mess_person = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div[2]/div/div/div[1]/div[1]/div/div/div/div/div/div/div[1]/div/div/div[1]/div/div/div/div/div[2]/div/div[1]/div/div[1]/a/div[1]/div')
+    mess_person.click()
+
+    time.sleep(time_sleep)
+
+    like_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[5]/div/div[1]/div[1]/div/div/div/div/div[2]/div[2]/div/span[2]/div')
+    like_btn.click()
+
+
     return None
 
 driver = init_driver(driver_filepath)
@@ -150,11 +192,21 @@ while True:
     print("-----")
     print(f"Notification {count} seeing")
     count += 1
-    time.sleep(3)
-    try:
-        notifications_collector(driver)
-    except:
-        print("EXCEPT TRUE")
-        time.sleep(3)
-        driver.get(notifications_url)
-    time.sleep(3)
+    time.sleep(time_sleep)
+    if count < 100:
+        try:
+            notifications_collector(driver)
+        except:
+            print("EXCEPT TRUE")
+            time.sleep(time_sleep)
+            driver.get(notifications_url)
+        
+        time.sleep(time_sleep)
+    else:
+        count = 0
+        try:
+            print("ANTI FB AI MODE")
+            anti_fb_ai(driver)
+        except:
+            time.sleep(300)
+

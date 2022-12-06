@@ -10,7 +10,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 
 import smtplib
-import func_timeout
 from email.message import EmailMessage
 
 import pytz
@@ -80,7 +79,6 @@ def send_notification_mail(sender, pwd, receiver, email_content):
     s.send_message(msg)
     # terminating the session
     s.quit()
-    print("---------------------------------------")
     print("Gửi mail thông báo thành công")
 
     return None
@@ -94,9 +92,10 @@ def post_checker(driver):
         post_id = res.fetchone()[0]
         cur.execute("DELETE FROM post WHERE post_id=:post_id", {"post_id": post_id})
         con.commit()
-
+        
 
         driver.get(f"{home_url}/{post_id}")
+        print(f"go to post id: {post_id}")
         time.sleep(5)
 
         group_id = driver.current_url.split("/")[4]
@@ -116,21 +115,23 @@ def post_checker(driver):
             con.commit()
             status = "error"
             post_text = ""
+    
         
         con.close()
-        print(post_text)
-        print("---")
+        print(f"post text: {post_text}")
 
         for keyword in keywords:
             if keyword in post_text:
                 status = "found"
                 keywords_found.append(keyword)
+            
+        print(f"status: {status} ")
 
         result = {
         "status": status,
-        "keywords_found": keywords_found,
+        "keywords_found": str(keywords_found),
         "group": group_id,
-        "post_id": post_id,
+        "post_id": int(post_id),
         "post_text": post_text,
         "checked_time": now
         }
@@ -147,6 +148,15 @@ def write_log(file_path, file_content):
     json_now_object = f'"{now}": {json_object} , '
     with open(file_path, "a", encoding='utf-8') as text_file:
         text_file.write(json_now_object)
+
+    return None
+
+def save_database(data):
+    con = sqlite3.connect("fb.db")
+    cur = con.cursor()
+    cur.execute("INSERT INTO post_checked VALUES (:status, :keywords_found, :post_id, :group, :post_text, :checked_time)", data)
+    con.commit()
+    con.close()
 
     return None
 
@@ -208,18 +218,27 @@ def main(driver):
     count_post = 0
     while True:
         time.sleep(5)
+        now = str(datetime.now(vn_tz))
         today = datetime.now(vn_tz).date()
         count_post += 1
-        print("***")
-        print(f"Đang kiểm tra bài viết số: {count_post}")
+        print("---")
+        print(f"Checking: {count_post}")
+        print(now)
         
         try:
             listener_post = post_checker(driver)
             log_file_path = f"logs/{listener_post['status']}-{today}.json"
             try:
                 write_log(log_file_path, listener_post)
+                print("written to file log")
             except:
                 pass
+            try:
+                save_database(listener_post)
+                print("saved to database")
+            except:
+                pass
+
            
             try:
                 total_logs_file_path = f"logs/logs-{today}.txt"
@@ -232,8 +251,8 @@ def main(driver):
             if listener_post["status"] == "found":
                 try:
                     email_content = json.dumps(listener_post, indent=4, ensure_ascii=False)
-                    func_timeout.func_timeout(20, send_notification_mail(sender_email, pwd_email, receiver_email, email_content))
-                except func_timeout.FunctionTimedOut:
+                    send_notification_mail(sender_email, pwd_email, receiver_email, email_content)
+                except:
                     print("Gửi mail thất bại")  
 
             time.sleep(3)
