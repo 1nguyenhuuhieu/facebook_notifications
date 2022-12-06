@@ -139,7 +139,6 @@ def notifications_collector(driver):
                     return None
         except:
             print("EXCEPT NO NEW NOTIFICATION, wait 300s to recheck")
-            anti_fb_ai(driver)
             time.sleep(30)
             driver.get(notifications_url)
     return None
