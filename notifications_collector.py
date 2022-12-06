@@ -153,32 +153,13 @@ def anti_fb_ai(driver):
     time.sleep(time_sleep)
     driver.execute_script("window.scrollTo(0, 0)")
 
-    for i in range(random.randint(2,4)):
-        driver.get(home_url)
-        time.sleep(time_sleep)
-        like_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div[2]/div/div/div/div[3]/div/div[3]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div/div[8]/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]/div[1]')
-        like_btn.click()
-        time.sleep(time_sleep)
     driver.get(home_url)
     time.sleep(time_sleep)
-
-    
-    share = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div[2]/div/div/div/div[3]/div/div[3]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div/div[8]/div/div[4]/div/div/div[1]/div/div/div/div[3]/div/div[1]')
-    share.click()
-
-    time.sleep(time_sleep)
-    mess = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div[1]/div[2]/span/span/div/div[1]')
-    mess.click()
-
-    time.sleep(time_sleep)
-
-    mess_person = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[2]/div[4]/div[2]/div/div/div[1]/div[1]/div/div/div/div/div/div/div[1]/div/div/div[1]/div/div/div/div/div[2]/div/div[1]/div/div[1]/a/div[1]/div')
-    mess_person.click()
-
-    time.sleep(time_sleep)
-
-    like_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[5]/div/div[1]/div[1]/div/div/div/div/div[2]/div[2]/div/span[2]/div')
+    like_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div[2]/div/div/div/div[3]/div/div[3]/div/div/div[1]/div/div/div/div/div/div/div/div/div/div/div/div[8]/div/div[4]/div/div/div[1]/div/div[2]/div/div[1]/div[1]/div[1]')
     like_btn.click()
+    time.sleep(time_sleep)
+    driver.get(home_url)
+    time.sleep(time_sleep)
 
 
     return None
