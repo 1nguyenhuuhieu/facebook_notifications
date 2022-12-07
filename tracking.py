@@ -8,7 +8,7 @@ app = Flask(__name__)
 def hello_world(context = None):
     con = sqlite3.connect("fb.db")
     cur = con.cursor()
-    res = cur.execute("SELECT * FROM post_checked ORDER BY checked_time DESC LIMIT 100")
+    res = cur.execute("SELECT * FROM post_checked ORDER BY checked_time DESC LIMIT 30")
     context = res.fetchall()
     con.close()
 
