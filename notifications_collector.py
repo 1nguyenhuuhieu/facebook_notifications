@@ -15,7 +15,7 @@ import random
 from config import init
 
 
-time_sleep = random.randint(3, 6)
+time_sleep = random.randint(5, 7)
 
 vn_tz = pytz.timezone('Asia/Ho_Chi_Minh')
 
@@ -139,7 +139,7 @@ def notifications_collector(driver):
                     return None
         except:
             print("EXCEPT NO NEW NOTIFICATION, wait 300s to recheck")
-            time.sleep(30)
+            time.sleep(300)
             driver.get(notifications_url)
     return None
 
