@@ -12,4 +12,4 @@ def hello_world(context = None):
     context = res.fetchall()
     con.close()
 
-    return render_template('base.html', context=context)
+    return render_template('base.html', context=(("test1"), ("test2")))
