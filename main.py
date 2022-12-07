@@ -23,8 +23,5 @@ def post_checked():
     cur = con.cursor()
     res = cur.execute("SELECT * FROM post_checked")
 
-    r = [dict((cur.description[i][0], value) for i, value in enumerate(row)) for row in res.fetchall()]
-
     con.close()
-    jsonString = json.dumps(r, ensure_ascii=False)
-    return jsonString
+    return res.fetchall()
