@@ -83,6 +83,7 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
 def notifications_collector(driver):
     
     try:
+        status = "Mở trang thông báo"
         now = str(datetime.now(vn_tz))
         now_date = str(datetime.now(vn_tz).date())
         file_path = f"logs/notifications-clicked-{now_date}.txt"
@@ -93,11 +94,13 @@ def notifications_collector(driver):
         unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div')
         unread_btn.click()
         print("unread clicked")
+        status = "Mở trang thông báo chưa đọc"
 
         time.sleep(time_sleep)
         news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
         news_btn.click()
         print("notification clicked")
+        status = "Xem thông báo chưa đọc mới nhất"
         time.sleep(time_sleep)
 
         post_url = driver.current_url
@@ -124,8 +127,10 @@ def notifications_collector(driver):
 
     except:
         print("EXCEPT RELOAD PAGE")
+        status = "Lỗi khi mở trang thông báo"
         try:
             reload_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div/div[3]/div/div')
+            status = "Đã bị block tạm thời"
             a_elements = driver.find_elements(By.TAG_NAME, 'a')
             for a in a_elements:
                 if "/notifications/" in a.get_attribute("href"):
@@ -138,12 +143,14 @@ def notifications_collector(driver):
                     time.sleep(time_sleep)
                     return None
         except:
+            status = "Không có thông báo mới hoặc bị lỗi"
             print("EXCEPT NO NEW NOTIFICATION, wait 300s to recheck")
             time.sleep(300)
             driver.get(notifications_url)
     return None
 
 def anti_fb_ai(driver):
+    status = "Đang vào chế độ tự động tương tác"
     driver.get(home_url)
     time.sleep(time_sleep)
     print("go to home page")
@@ -211,6 +218,7 @@ while True:
         try:
             notifications_collector(driver)
         except:
+            status = "Lỗi không xác định"
             print("EXCEPT TRUE")
             time.sleep(time_sleep)
             driver.get(notifications_url)
@@ -227,7 +235,7 @@ while True:
     last_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M")
 
     data= {
-        "status":"tốt",
+        "status": status,
         "count_post": count_post,
         "last_time": last_time,
         "start_time": start_time
