@@ -14,6 +14,7 @@ import random
 # import hàm tự định nghĩa
 from config import init
 
+status = "..."
 
 time_sleep = random.randint(5, 7)
 
@@ -81,6 +82,7 @@ def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
     return False
 
 def notifications_collector(driver):
+    global status
     
     try:
         status = "Mở trang thông báo"
@@ -150,6 +152,7 @@ def notifications_collector(driver):
     return None
 
 def anti_fb_ai(driver):
+    global status
     status = "Đang vào chế độ tự động tương tác"
     driver.get(home_url)
     time.sleep(time_sleep)
@@ -203,12 +206,13 @@ driver.get(notifications_url)
 count_post = 0
 count = 0
 start = "no"
-status = "..."
+
 
 
 
 
 while True:
+    
     print("-----")
     print(f"Notification {count_post} seeing")
     count += 1
