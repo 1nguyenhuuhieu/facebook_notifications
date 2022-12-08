@@ -88,9 +88,9 @@ def post_checker(driver):
     try:
         con = sqlite3.connect("fb.db")
         cur = con.cursor()
-        res = cur.execute("SELECT post_id FROM post ORDER BY ROWID ASC LIMIT 1;")
+        res = cur.execute("SELECT post_id FROM post_uncheck ORDER BY ROWID ASC LIMIT 1;")
         post_id = res.fetchone()[0]
-        cur.execute("DELETE FROM post WHERE post_id=:post_id", {"post_id": post_id})
+        cur.execute("DELETE FROM post_uncheck WHERE post_id=:post_id", {"post_id": post_id})
         con.commit()
         
 
@@ -100,7 +100,8 @@ def post_checker(driver):
 
         group_id = driver.current_url.split("/")[4]
 
-        now = str(datetime.now(vn_tz))
+        now = datetime.now(vn_tz)
+        now = now.strftime("%Y-%m-%d %H:%M")
         now_date = str(datetime.now(vn_tz).date())
 
         status = "notfound"
@@ -130,10 +131,11 @@ def post_checker(driver):
         result = {
         "status": status,
         "keywords_found": str(keywords_found),
-        "group_id": group_id,
+        "checked_time": str(now),
         "post_id": int(post_id),
+        "group_id": group_id,
         "post_text": post_text,
-        "checked_time": now
+        
         }
 
         return result
@@ -154,7 +156,7 @@ def write_log(file_path, file_content):
 def save_database(data):
     con = sqlite3.connect("fb.db")
     cur = con.cursor()
-    cur.execute("INSERT INTO post_checked VALUES (:status, :keywords_found, :post_id, :group_id, :post_text, :checked_time)", data)
+    cur.execute("INSERT INTO post_checked VALUES (:status, :keywords_found,:checked_time, :post_id, :group_id, :post_text )", data)
     con.commit()
     con.close()
 
@@ -213,9 +215,35 @@ def mobile_driver():
 
 
 
+def create_monitor(start_time):
+    con = sqlite3.connect("fb.db")
+    cur = con.cursor()
+    cur.execute("INSERT INTO monitor_post_checker VALUES ('yes', 'starting',:start_time, 0, 'last_time', 0 )", {"start_time": start_time})
+    con.commit()
+    con.close()
+
+    return None
+
+
+def update_monitor(data):
+    con = sqlite3.connect("fb.db")
+    cur = con.cursor()
+    cur.execute("""
+    UPDATE monitor_post_checker
+    SET status = :status, count_post = :count_post, last_time = :last_time, count_found_post = :count_found_post
+    WHERE start_time = :start_time
+    """, data)
+    con.commit()
+    con.close()
+
+    return None
+
+
+
 def main(driver):
 
     count_post = 0
+    count_found_post = 0
     while True:
         time.sleep(5)
         now = str(datetime.now(vn_tz))
@@ -249,6 +277,7 @@ def main(driver):
                 pass
 
             if listener_post["status"] == "found":
+                count_found_post += 1
                 try:
                     email_content = json.dumps(listener_post, indent=4, ensure_ascii=False)
                     send_notification_mail(sender_email, pwd_email, receiver_email, email_content)
@@ -259,8 +288,25 @@ def main(driver):
 
         except:
             time.sleep(random.randint(60,100))
+        
+        last_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M")
+
+        data= {
+            "status":"tốt",
+            "count_post": count_post,
+            "last_time": last_time,
+            "start_time": start_time,
+            "count_found_post": count_found_post
+        }
+
+        update_monitor(data)
+
+
 
 
 driver = mobile_driver()
+start_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M:%S")
+create_monitor(start_time)
+
 main(driver)
 

@@ -112,7 +112,7 @@ def notifications_collector(driver):
         try:
             con = sqlite3.connect("fb.db")
             cur = con.cursor()
-            cur.execute("INSERT INTO post VALUES (:post_id)", {"post_id": post_id})
+            cur.execute("INSERT INTO post_uncheck VALUES (:post_id)", {"post_id": post_id})
             con.commit()
             con.close()
         except:
@@ -163,15 +163,49 @@ def anti_fb_ai(driver):
 
     return None
 
+
+
+def create_monitor(start_time):
+    con = sqlite3.connect("fb.db")
+    cur = con.cursor()
+    cur.execute("INSERT INTO monitor_collector VALUES ('yes', 'starting',:start_time, 0, 'last_time' )", {"start_time": start_time})
+    con.commit()
+    con.close()
+
+    return None
+
+def update_monitor(data):
+    con = sqlite3.connect("fb.db")
+    cur = con.cursor()
+    cur.execute("""
+    UPDATE monitor_collector
+    SET status = :status, count_post = :count_post, last_time = :last_time
+    WHERE start_time = :start_time
+    """, data)
+    con.commit()
+    con.close()
+
+    return None
+
+
+start_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M:%S")
+create_monitor(start_time)
 driver = init_driver(driver_filepath)
 login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
 driver.get(notifications_url)
+count_post = 0
 count = 0
+start = "no"
+status = "..."
+
+
+
 
 while True:
     print("-----")
-    print(f"Notification {count} seeing")
+    print(f"Notification {count_post} seeing")
     count += 1
+    count_post += 1
     time.sleep(time_sleep)
     if count < 100:
         try:
@@ -189,4 +223,15 @@ while True:
             anti_fb_ai(driver)
         except:
             time.sleep(300)
+
+    last_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M")
+
+    data= {
+        "status":"tốt",
+        "count_post": count_post,
+        "last_time": last_time,
+        "start_time": start_time
+    }
+
+    update_monitor(data)
 
