@@ -208,13 +208,17 @@ def take_screenshot(screenshot_path):
 
 start_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M:%S")
 create_monitor(start_time)
-driver = init_driver(driver_filepath)
-login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
-driver.get(notifications_url)
+
 count_post = 0
 count = 0
 start = "no"
 
+try:
+    driver = init_driver(driver_filepath)
+    login_facebook(driver, home_url, cookies_filepath, pwd_facebook)
+    driver.get(notifications_url)
+except:
+    pass
 
 
 

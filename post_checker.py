@@ -305,8 +305,10 @@ def main(driver):
 
 count_post = 0
 count_found_post = 0
-
-driver = mobile_driver()
+try:
+    driver = mobile_driver()
+except:
+    pass
 start_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M:%S")
 create_monitor(start_time)
 
