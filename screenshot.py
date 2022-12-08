@@ -1,12 +1,12 @@
-from Xlib import display, X
-import Image #PIL
+import pyscreenshot as ImageGrab
 
-W,H = 200,200
-dsp = display.Display()
-try:
-    root = dsp.screen().root
-    raw = root.get_image(0, 0, W,H, X.ZPixmap, 0xffffffff)
-    image = Image.fromstring("RGB", (W, H), raw.data, "raw", "BGRX")
-    image.show()
-finally:
-    dsp.close()
+# fullscreen
+im=ImageGrab.grab()
+im.show()
+
+# part of the screen
+im=ImageGrab.grab(bbox=(10,10,500,500))
+im.show()
+
+# to file
+ImageGrab.grab_to_file('im.png')
