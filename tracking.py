@@ -1,6 +1,23 @@
 from flask import Flask
 from flask import render_template
 import sqlite3
+import json
+
+from config import init
+
+file_path = "config.ini"
+config = init(file_path)
+
+keyword_filepath = config["KEYWORDS"]["file_path"]
+
+def load_json_file(file_path):
+    file = open(file_path, encoding='utf-8')
+    items_json = json.load(file)
+    file.close()
+
+    return [item for item in items_json.values()]
+
+keywords = load_json_file(keyword_filepath)    
 
 app = Flask(__name__)
 
@@ -17,7 +34,8 @@ def hello_world(context = None):
     context = {
         "monitor": monitor,
         "posts": posts,
-        "monitor_post": monitor_post
+        "monitor_post": monitor_post,
+        "keywords": keywords
     }
     con.close()
 

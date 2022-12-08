@@ -85,6 +85,7 @@ def send_notification_mail(sender, pwd, receiver, email_content):
 
 
 def post_checker(driver):
+    global count_post
     try:
         con = sqlite3.connect("fb.db")
         cur = con.cursor()
@@ -96,6 +97,7 @@ def post_checker(driver):
 
         driver.get(f"{home_url}/{post_id}")
         print(f"go to post id: {post_id}")
+        count_post += 1
         time.sleep(5)
 
         group_id = driver.current_url.split("/")[4]
@@ -242,13 +244,11 @@ def update_monitor(data):
 
 def main(driver):
 
-    count_post = 0
-    count_found_post = 0
+
     while True:
         time.sleep(5)
         now = str(datetime.now(vn_tz))
         today = datetime.now(vn_tz).date()
-        count_post += 1
         print("---")
         print(f"Checking: {count_post}")
         print(now)
@@ -277,6 +277,7 @@ def main(driver):
                 pass
 
             if listener_post["status"] == "found":
+                global count_found_post
                 count_found_post += 1
                 try:
                     email_content = json.dumps(listener_post, indent=4, ensure_ascii=False)
@@ -302,7 +303,8 @@ def main(driver):
         update_monitor(data)
 
 
-
+count_post = 0
+count_found_post = 0
 
 driver = mobile_driver()
 start_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M:%S")
