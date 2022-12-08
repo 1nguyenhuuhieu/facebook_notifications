@@ -22,7 +22,8 @@ keywords = load_json_file(keyword_filepath)
 app = Flask(__name__)
 
 @app.route("/")
-def hello_world(context = None):
+def index(context = None):
+    screenshot = "google.png"
     con = sqlite3.connect("fb.db")
     cur = con.cursor()
     res = cur.execute("SELECT * FROM post_checked ORDER BY checked_time DESC LIMIT 30")
@@ -35,7 +36,8 @@ def hello_world(context = None):
         "monitor": monitor,
         "posts": posts,
         "monitor_post": monitor_post,
-        "keywords": keywords
+        "keywords": keywords,
+        "screenshot": screenshot
     }
     con.close()
 

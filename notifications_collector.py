@@ -1,6 +1,6 @@
 import json
 import time
-
+import pyscreenshot as ImageGrab
 import pytz
 from datetime import date
 from datetime import datetime
@@ -15,7 +15,7 @@ import random
 from config import init
 
 status = "..."
-
+screenshot_path = "static/screenshot.png"
 time_sleep = random.randint(5, 7)
 
 vn_tz = pytz.timezone('Asia/Ho_Chi_Minh')
@@ -197,6 +197,14 @@ def update_monitor(data):
 
     return None
 
+def take_screenshot(screenshot_path):
+    # fullscreen
+    im=ImageGrab.grab()
+    # to file
+    im.save(screenshot_path)
+
+    return None
+
 
 start_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M:%S")
 create_monitor(start_time)
@@ -246,4 +254,10 @@ while True:
     }
 
     update_monitor(data)
+
+
+    #Chụp ảnh màn hình mỗi 10 lần check noti
+    if count % 10 == 0:
+        take_screenshot(screenshot_path)
+
 

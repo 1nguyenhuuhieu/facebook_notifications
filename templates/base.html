@@ -27,7 +27,7 @@
         <div class="row justify-content-center">
       
             <div class="col-12 col-lg-6">
-              <div class="card shadow-sm">
+              <div class="card shadow-sm h-100">
                 <h5 class="card-header"><i class="bi bi-bell-fill me-2"></i>Công cụ thu nhận thông báo</h5>
                 
                 <div class="card-body">
@@ -46,7 +46,7 @@
 
                   
             <div class="col-12 col-lg-6 mt-lg-0 mt-3">
-              <div class="card shadow-sm">
+              <div class="card shadow-sm  h-100">
                 <h5 class="card-header"><i class="bi bi-stickies-fill me-2"></i>Công cụ kiểm tra bài viết</h5>
                 <div class="card-body">
                   <p class="card-title"><i class="bi bi-check-circle-fill text-success me-2"></i>Đã bật: {{ context["monitor_post"][2] }}</p>
@@ -67,7 +67,7 @@
               
             </div>
 
-            <div class="col-12 col-lg-6">
+            <div class="col-12">
               <div class="my-3 p-3 bg-body rounded shadow-sm border">
                 <h6 class="border-bottom pb-2 mb-0">30 bài viết mới kiểm tra</h6>
 
@@ -99,6 +99,12 @@
                 </small>
               </div>
 
+            </div>
+
+            <div class="col-12 mt-3">
+              <h5>Ảnh chụp màn hình server</h5>
+              
+              <img src=" {{ url_for('static', filename='screenshot.png') }}" alt="" class="img-fluid rounded my-3 w-100">
             </div>
         </div>
     </div>
