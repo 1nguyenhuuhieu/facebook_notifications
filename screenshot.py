@@ -1,10 +1,12 @@
-import gtk.gdk
+from Xlib import display, X
+import Image #PIL
 
-w = gtk.gdk.get_default_root_window()
-sz = w.get_size()
-pb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB,False,8,sz[0],sz[1])
-pb = pb.get_from_drawable(w,w.get_colormap(),0,0,0,0,sz[0],sz[1])
-if (pb != None):
-    pb.save("screenshot.png","png")
-else:
-    pass
+W,H = 200,200
+dsp = display.Display()
+try:
+    root = dsp.screen().root
+    raw = root.get_image(0, 0, W,H, X.ZPixmap, 0xffffffff)
+    image = Image.fromstring("RGB", (W, H), raw.data, "raw", "BGRX")
+    image.show()
+finally:
+    dsp.close()
