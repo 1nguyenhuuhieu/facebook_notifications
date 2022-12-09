@@ -6,7 +6,7 @@ from datetime import date
 from datetime import datetime
 
 from selenium.webdriver.common.by import By
-from selenium import webdriver
+from seleniumwire import webdriver
 
 import sqlite3
 import random
@@ -15,6 +15,7 @@ import random
 from config import init
 
 proxy_server = "180.214.236.203:2021"
+
 
 status = "..."
 screenshot_path = "static/screenshot.png"
@@ -36,6 +37,13 @@ pwd_facebook = config["FACEBOOK"]["pwd"]
 
 # Khởi tạo chrome driver với: maximize cửa sổ, disable thông báo đẩy, disable images hiển thị
 def init_driver(driver_filepath):
+    options = {
+    'proxy': {
+        'http': 'http://Proxyviet51340:CWrg2Swu@180.214.236.203:2021',
+        'https': 'http://Proxyviet51340:CWrg2Swu@180.214.236.203:2021',
+        'no_proxy': 'localhost,127.0.0.1'
+    }
+}
     chrome_options = webdriver.ChromeOptions()
     prefs = {"profile.default_content_setting_values.notifications" : 2,
             "profile.managed_default_content_settings.images": 2
@@ -44,7 +52,7 @@ def init_driver(driver_filepath):
     chrome_options.add_experimental_option("prefs",prefs)
     chrome_options.add_argument('--proxy-server=%s' % proxy_server)
     
-    return webdriver.Chrome(executable_path=driver_filepath, chrome_options=chrome_options)
+    return webdriver.Chrome(executable_path=driver_filepath, chrome_options=chrome_options, seleniumwire_options=options)
 
 
 def login_facebook(driver, home_url, cookies_filepath, pwd_facebook):
