@@ -145,7 +145,7 @@ def notifications_collector(driver):
                     time.sleep(time_sleep)
                     return None
         except:
-            status = "Không có thông báo mới hoặc bị lỗi"
+            status = "Không có thông báo mới hoặc bị block tạm thời, chờ 5 phút thử lại"
             print("EXCEPT NO NEW NOTIFICATION, wait 300s to recheck")
             time.sleep(300)
             driver.get(notifications_url)

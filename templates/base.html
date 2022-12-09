@@ -6,108 +6,66 @@
     <title>facebook notifications tracking</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   <body>
 
     <div class="container">
       <header class="pb-3 mb-4 border-bottom mt-3">
-        <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
-          
-          <span class="fs-2">Lọc từ khóa trên các bài viết mới từ facebook</span>
-          
+        <a href="{{ url_for('index')}}" class="d-flex align-items-center text-dark text-decoration-none">
+      
+          <span class="fs-2"><i class="fa-solid fa-house me-2"></i>Lọc từ khóa trên các bài viết mới từ facebook</span>
+        
         </a>
+       
         {% for keyword in context.keywords %}
+        
 
-        <span class="badge text-bg-primary">{{ keyword }}</span>
+        <span class="badge text-bg-light">{{ keyword }}</span>
 
         
 
         {% endfor%}
       </header>
-        <div class="row justify-content-center">
-      
-            <div class="col-12 col-lg-6">
-              <div class="card shadow-sm h-100">
-                <h5 class="card-header"><i class="bi bi-bell-fill me-2"></i>Công cụ thu nhận thông báo</h5>
-                
-                <div class="card-body">
-                  <p class="card-title"><i class="bi bi-check-circle-fill text-success me-2"></i>Đã bật: {{ context["monitor"][2] }}</p>
-                  <p class="card-title"><i class="bi bi-check-circle-fill text-success me-2"></i>Trạng thái: {{ context["monitor"][1] }}</p>
-                  <p class="card-title"><i class="bi bi-bell-fill text-danger me-2"></i>Thông báo đã xem: {{ context["monitor"][3] }}</p>
-                  <p class="card-title"><i class="bi bi-clock-history me-2"></i>Thời gian cập nhập cuối cùng: {{ context["monitor"][4] }} </p>
-           
-                    <hr>
-                    <small class="text-muted fst-italic"><i class="bi bi-info-circle-fill me-2"></i>Lần lượt click vào từng thông báo mới, đánh dấu bài viết thành "đã xem" và ghi ID của bài viết vào cơ sở dữ liệu</small></p>
-                  <a href="#" class="btn btn-outline-primary">Xem các bài viết chưa được kiểm tra<i class="bi bi-arrow-right ms-3"></i></a>
-                </div>
-              </div>
-              
-            </div>
 
-                  
-            <div class="col-12 col-lg-6 mt-lg-0 mt-3">
-              <div class="card shadow-sm  h-100">
-                <h5 class="card-header"><i class="bi bi-stickies-fill me-2"></i>Công cụ kiểm tra bài viết</h5>
-                <div class="card-body">
-                  <p class="card-title"><i class="bi bi-check-circle-fill text-success me-2"></i>Đã bật: {{ context["monitor_post"][2] }}</p>
-                  <p class="card-title"><i class="bi bi-check-circle-fill text-success me-2"></i>Trạng thái: Hoạt động tốt</p>
-                  <p class="card-title"><i class="bi bi-file-earmark-fill text-primary me-2"></i>Bài viết đã xem: {{ context["monitor_post"][3] }}</p>
+      <div class="row mb-3 align-items-center">
+     
+        <div class="col-lg-3 col-12">
 
-                  <p class="card-title"><i class="bi bi-file-earmark-check-fill me-2 text-success"></i>Bài viết có từ khóa: {{ context["monitor_post"][5] }}</p>
-
-
-                  <p class="card-title"><i class="bi bi-clock-history me-2"></i>Thời gian cập nhập cuối cùng: {{ context["monitor_post"][4] }} </p>
-                    <hr>
-                    <small class="text-muted fst-italic"><i class="bi bi-info-circle-fill me-2"></i>Lần lượt kiểm tra từng bài viết ở trong cơ sở dữ liệu xem có chứa từ khóa và đánh dấu là đã xem.</small>
-
-                  </p>
-                  <a href="#" class="btn btn-primary">Xem các bài viết đã tìm thấy <i class="bi bi-arrow-right ms-3"></i></a>
-                </div>
-              </div>
-              
-            </div>
-
-            <div class="col-12">
-              <div class="my-3 p-3 bg-body rounded shadow-sm border">
-                <h6 class="border-bottom pb-2 mb-0">30 bài viết mới kiểm tra</h6>
-
-                {% for post in context.posts %}
-                <div class="d-flex text-muted pt-3">
-                  <i class="bi bi-x-lg me-3 text-danger"></i>
-            
-                  <p class="pb-3 mb-0 small lh-sm border-bottom">
-                    
-                    <strong class="d-block text-gray-dark"><span class="
-                      {% if post[0] == 'found '%}
-                      text-success
-                      {% else %}
-                      text-danger
-                      {% endif %}
-                      
-                      ">{{ post[0] }}</span>. Post {{ post[3] }}
-                      <span class="fw-normal fst-italic">
-                      on group: {{ post[4] }} at {{ post[2] }}
-                    </span>
-                  </strong>
-                    {{ post[5] | truncate(150)}}
-                  </p>
-                </div>
-                {% endfor %}
-
-                <small class="d-block text-end mt-3">
-                  <a href="#">Tất cả bài viết đã kiểm tra</a>
-                </small>
-              </div>
-
-            </div>
-
-            <div class="col-12 mt-3">
-              <h5>Ảnh chụp màn hình server</h5>
-              
-              <img src=" {{ url_for('static', filename='screenshot.png') }}" alt="" class="img-fluid rounded my-3 w-100">
-            </div>
+          <button class="btn btn-success rounded-pill mb-lg-0 mb-2" type="submit" id="refresh"><i class="bi bi-arrow-clockwise me-2"></i>Làm mới</button>
+    
+ 
         </div>
+
+        <div class="col-lg-3 col-12">
+
+          <span class="fw-semibold me-3"><i class="fa-solid fa-microchip me-2 "></i>CPU: {{ context.cpu_usage }}%</span>
+ 
+        </div>
+        <div class="col-lg-3 col-12">
+
+          <span class="fw-semibold"><i class="fa-solid fa-memory me-2"></i>Ram: {{ context.ram_used}}({{ context.ram_percent }}%)</span>
+ 
+        </div>
+        <div class="col-lg-3 col-12">
+          <span class="fw-semibold me-3"><i class="bi bi-gear-fill me-2"></i>{{ context.os_info }}</span>
+ 
+        </div>
+
+      </div>
+      {% block content %}
+
+        {% endblock %}
     </div>
+    <script>
+      const refreshBtn = document.getElementById("refresh");
+      refreshBtn.addEventListener("click", refreshPage)
+
+      function refreshPage(){
+        location.reload();
+      }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
   </body>

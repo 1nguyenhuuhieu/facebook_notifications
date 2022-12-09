@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+     
+<div class="row justify-content-center">
+
+      
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm h-100">
+        <h5 class="card-header"><i class="bi bi-bell-fill me-2"></i>Công cụ thu nhận thông báo</h5>
+        
+        <div class="card-body">
+          <p class="card-title"><i class="bi bi-check-circle-fill text-success me-2"></i>Đã bật: {{ context["monitor"][2] }}</p>
+          <p class="card-title"><i class="bi bi-check-circle-fill text-success me-2"></i>Trạng thái: {{ context["monitor"][1] }}</p>
+          <p class="card-title"><i class="bi bi-bell-fill text-danger me-2"></i>Thông báo đã xem: {{ context["monitor"][3] }}</p>
+          <p class="card-title"><i class="bi bi-clock-history me-2"></i>Thời gian cập nhập cuối cùng: {{ context["monitor"][4] }} </p>
+   
+            <hr>
+            <small class="text-muted fst-italic"><i class="bi bi-info-circle-fill me-2"></i>Lần lượt click vào từng thông báo mới, đánh dấu bài viết thành "đã xem" và ghi ID của bài viết vào cơ sở dữ liệu</small></p>
+          <a href="#" class="btn btn-outline-primary">Xem các bài viết chưa được kiểm tra<i class="bi bi-arrow-right ms-3"></i></a>
+        </div>
+      </div>
+      
+    </div>
+
+          
+    <div class="col-12 col-lg-6 mt-lg-0 mt-3">
+      <div class="card shadow-sm  h-100">
+        <h5 class="card-header"><i class="bi bi-stickies-fill me-2"></i>Công cụ kiểm tra bài viết</h5>
+        <div class="card-body">
+          <p class="card-title"><i class="bi bi-check-circle-fill text-success me-2"></i>Đã bật: {{ context["monitor_post"][2] }}</p>
+          <p class="card-title"><i class="bi bi-check-circle-fill text-success me-2"></i>Trạng thái: Hoạt động tốt</p>
+          <p class="card-title"><i class="bi bi-file-earmark-fill text-primary me-2"></i>Bài viết đã xem: {{ context["monitor_post"][3] }}</p>
+
+          <p class="card-title"><i class="bi bi-file-earmark-check-fill me-2 text-success"></i>Bài viết có từ khóa: {{ context["monitor_post"][5] }}</p>
+
+
+          <p class="card-title"><i class="bi bi-clock-history me-2"></i>Thời gian cập nhập cuối cùng: {{ context["monitor_post"][4] }} </p>
+            <hr>
+            <small class="text-muted fst-italic"><i class="bi bi-info-circle-fill me-2"></i>Lần lượt kiểm tra từng bài viết ở trong cơ sở dữ liệu xem có chứa từ khóa và đánh dấu là đã xem.</small>
+
+          </p>
+          <a href="#" class="btn btn-primary">Xem các bài viết đã tìm thấy <i class="bi bi-arrow-right ms-3"></i></a>
+        </div>
+      </div>
+      
+    </div>
+
+    <div class="col-12 mt-3">
+      <h5>Ảnh chụp màn hình server</h5>
+      
+      <img src=" {{ url_for('static', filename='screenshot.png') }}" alt="" class="img-fluid rounded my-3 w-100">
+    </div>
+
+
+
+    <div class="col-12">
+      <div class="my-3 p-3 bg-body rounded shadow-sm border">
+        <h5 class="border-bottom pb-2 mb-0">10 bài viết mới kiểm tra</h5>
+
+        {% for post in context.posts %}
+        <div class="d-flex text-muted pt-3">
+          <i class="bi bi-x-lg me-3 text-danger"></i>
+    
+          <p class="pb-3 mb-0 small lh-sm border-bottom">
+            
+            <strong class="d-block text-gray-dark"><span class="
+              {% if post[0] == 'found '%}
+              text-success
+              {% else %}
+              text-danger
+              {% endif %}
+              
+              ">{{ post[0] }}</span>. Post {{ post[3] }}
+              <span class="fw-normal fst-italic">
+              on group: {{ post[4] }} at {{ post[2] }}
+            </span>
+          </strong>
+            {{ post[5] | truncate(50)}}
+          </p>
+        </div>
+        {% endfor %}
+
+        <small class="d-block text-end mt-3">
+          <a href="{{ url_for('post_checked') }}">Tất cả bài viết đã kiểm tra</a>
+        </small>
+      </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}

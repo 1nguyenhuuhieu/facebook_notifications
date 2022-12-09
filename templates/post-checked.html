@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <h3>1000 bài viết đã kiểm tra</h3>
+        <hr>
+        {% for post in context.posts %}
+        <h6>
+            {% if post[0]=="notfound" %}
+            <span class="badge rounded-pill text-bg-danger">Không tìm thấy</span>
+            {% else %}
+            <span class="badge rounded-pill text-bg-success">Tìm thấy: </span>
+            {{ post[1] }}
+            {% endif %}
+            
+            {{ post[3]}}. Group: {{ post[4]}}. Thời gian kiểm tra: {{ post[2]}}</h6>
+        <p>
+
+            {{ post[5] }}
+
+        </p>
+        <hr>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}
