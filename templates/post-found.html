@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <h3>Bài viết đã tìm thấy từ khóa</h3>
+        <hr>
+        {% for post in context.posts %}
+        <h6>
+            <span class="badge rounded-pill text-bg-success">Tìm thấy: </span>
+            {{ post[1] }}. {{ post[3]}}. Group: {{ post[4]}}. Thời gian kiểm tra: {{ post[2]}}</h6>
+        <p>
+
+            {{ post[5] }}
+
+        </p>
+        <hr>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}

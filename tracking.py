@@ -61,10 +61,6 @@ def post_checked(context = None):
     cur = con.cursor()
     res = cur.execute("SELECT * FROM post_checked ORDER BY checked_time DESC LIMIT 1000")
     posts = res.fetchall()
-    monitor = cur.execute("SELECT * FROM monitor_collector ORDER BY start_time DESC LIMIT 1")
-    monitor = monitor.fetchone()
-
-    monitor_post = cur.execute("SELECT * FROM monitor_post_checker ORDER BY start_time DESC LIMIT 1").fetchone()
 
     cpu_usage = psutil.cpu_percent()
     ram_percent = psutil.virtual_memory()[2]
@@ -72,9 +68,7 @@ def post_checked(context = None):
     os_info = platform.platform()
 
     context = {
-        "monitor": monitor,
         "posts": posts,
-        "monitor_post": monitor_post,
         "keywords": keywords,
         "cpu_usage": cpu_usage,
         "ram_percent": ram_percent,
@@ -85,3 +79,28 @@ def post_checked(context = None):
     con.close()
 
     return render_template('post-checked.html', context=context)
+
+@app.route("/post-found/")
+def post_found(context = None):
+    con = sqlite3.connect("fb.db")
+    cur = con.cursor()
+    res = cur.execute("SELECT * FROM post_checked WHERE status = 'found' ORDER BY checked_time DESC LIMIT 1000")
+    posts = res.fetchall()
+
+    cpu_usage = psutil.cpu_percent()
+    ram_percent = psutil.virtual_memory()[2]
+    ram_used = "{:.2f}".format(psutil.virtual_memory()[3]/1000000000)
+    os_info = platform.platform()
+
+    context = {
+        "posts": posts,
+        "keywords": keywords,
+        "cpu_usage": cpu_usage,
+        "ram_percent": ram_percent,
+        "ram_used": ram_used,
+        "os_info": os_info
+        
+    }
+    con.close()
+
+    return render_template('post-found.html', context=context)
