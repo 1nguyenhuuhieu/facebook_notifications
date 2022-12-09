@@ -257,11 +257,17 @@ while True:
         "start_time": start_time
     }
 
-    update_monitor(data)
+    try:
+        update_monitor(data)
+    except:
+        pass
 
 
     #Chụp ảnh màn hình mỗi 10 lần check noti
     if count % 10 == 0:
-        take_screenshot(screenshot_path)
+        try:
+            take_screenshot(screenshot_path)
+        except:
+            pass
 
 
