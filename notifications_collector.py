@@ -14,6 +14,8 @@ import random
 # import hàm tự định nghĩa
 from config import init
 
+proxy_server = "180.214.236.203:2021"
+
 status = "..."
 screenshot_path = "static/screenshot.png"
 time_sleep = random.randint(7, 10)
@@ -40,6 +42,7 @@ def init_driver(driver_filepath):
     }
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_experimental_option("prefs",prefs)
+    chrome_options.add_argument('--proxy-server=%s' % proxy_server)
     
     return webdriver.Chrome(executable_path=driver_filepath, chrome_options=chrome_options)
 
