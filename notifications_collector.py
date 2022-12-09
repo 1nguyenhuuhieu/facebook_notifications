@@ -16,7 +16,7 @@ from config import init
 
 status = "..."
 screenshot_path = "static/screenshot.png"
-time_sleep = random.randint(5, 7)
+time_sleep = random.randint(7, 10)
 
 vn_tz = pytz.timezone('Asia/Ho_Chi_Minh')
 
