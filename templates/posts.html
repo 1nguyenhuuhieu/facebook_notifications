@@ -1,0 +1,18 @@
+{% for post in context.posts %}
+<h6>
+    {% if post[0]=='found' %}
+    <span class="badge rounded-pill text-bg-success">Tìm thấy</span>
+    {{ post[1] }}
+    {% else %}
+    <span class="badge rounded-pill text-bg-danger">Không tìm thấy</span>
+    {% endif %}
+
+
+    <a href="https://www.facebook.com/{{{{ post[3]}}}}"></a><i class="fa-solid fa-user-group"></i>{{ post[4]}}<i class="fa-solid fa-clock"></i>{{ post[2]}}</h6>
+<p>
+
+    {{ post[5] }}
+
+</p>
+<hr>
+{% endfor %}

@@ -5,19 +5,7 @@
     <div class="col-12 col-lg-8">
         <h3>Bài viết đã tìm thấy từ khóa</h3>
         <hr>
-        {% for post in context.posts %}
-        <h6>
-            <span class="badge rounded-pill text-bg-success">Tìm thấy: </span>
-            <i class="fa-solid fa-key mx-2"></i>
-            {{ post[1] }}<i class="fa-solid fa-note-sticky mx-2"></i>{{ post[3]}}<i class="fa-solid fa-user-group mx-2"></i>{{ post[4]}}<i class="fa-solid fa-clock mx-2"></i>{{ post[2]}}</h6>
-        <p>
-
-            {{ post[5] }}
-
-        </p>
-        <hr>
-        {% endfor %}
-
+        {% include "posts.html" %}
     </div>
 </div>
 {% endblock %}
