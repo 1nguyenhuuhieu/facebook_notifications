@@ -5,9 +5,11 @@
     <div class="col-12 col-lg-8">
         <h3>Bài viết đã thu thập</h3>
         <hr>
-        {% for post in context.posts %}
-        <span>{{ post[0] }}, </span>
-        {% endfor %}
+        <ul class="list-group">
+            {% for post in context.posts %}
+            <li class="list-group-item">{{ post[0] }}</li>
+            {% endfor %}
+          </ul>
     </div>
 </div>
 {% endblock %}
