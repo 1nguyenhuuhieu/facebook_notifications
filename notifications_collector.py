@@ -19,7 +19,7 @@ proxy_server = "180.214.236.203:2021"
 
 status = "..."
 screenshot_path = "static/screenshot.png"
-time_sleep = random.randint(3, 5)
+time_sleep = 3
 
 vn_tz = pytz.timezone('Asia/Ho_Chi_Minh')
 
