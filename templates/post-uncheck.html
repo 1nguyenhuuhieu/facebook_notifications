@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <h3>Bài viết đã tìm thấy từ khóa</h3>
+        <hr>
+        {% for post in posts %}
+        <span>{{ post }}, </span>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

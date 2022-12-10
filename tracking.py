@@ -104,3 +104,29 @@ def post_found(context = None):
     con.close()
 
     return render_template('post-found.html', context=context)
+
+
+@app.route("/post-uncheck/")
+def post_uncheck(context = None):
+    con = sqlite3.connect("fb.db")
+    cur = con.cursor()
+    res = cur.execute("SELECT * FROM post_uncheck")
+    posts = res.fetchall()
+
+    cpu_usage = psutil.cpu_percent()
+    ram_percent = psutil.virtual_memory()[2]
+    ram_used = "{:.2f}".format(psutil.virtual_memory()[3]/1000000000)
+    os_info = platform.platform()
+
+    context = {
+        "posts": posts,
+        "keywords": keywords,
+        "cpu_usage": cpu_usage,
+        "ram_percent": ram_percent,
+        "ram_used": ram_used,
+        "os_info": os_info
+        
+    }
+    con.close()
+
+    return render_template('post-uncheck.html', context=context)
