@@ -98,7 +98,7 @@ def post_checker(driver):
         driver.get(f"{home_url}/{post_id}")
         print(f"go to post id: {post_id}")
         count_post += 1
-        time.sleep(5)
+        time.sleep(2)
 
         group_id = driver.current_url.split("/")[4]
 
@@ -246,7 +246,7 @@ def main(driver):
 
 
     while True:
-        time.sleep(5)
+        time.sleep(2)
         now = str(datetime.now(vn_tz))
         today = datetime.now(vn_tz).date()
         print("---")
@@ -285,7 +285,7 @@ def main(driver):
                 except:
                     print("Gửi mail thất bại")  
 
-            time.sleep(3)
+            time.sleep(1)
 
         except:
             time.sleep(random.randint(60,100))
