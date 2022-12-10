@@ -19,7 +19,7 @@ proxy_server = "180.214.236.203:2021"
 
 status = "..."
 screenshot_path = "static/screenshot.png"
-time_sleep = 3
+time_sleep = 5
 
 vn_tz = pytz.timezone('Asia/Ho_Chi_Minh')
 
@@ -103,18 +103,17 @@ def notifications_collector(driver):
 
         print("TRY NOTIFICATIONS PAGE")
         print(now)
-        time.sleep(time_sleep)
+        time.sleep(3)
         unread_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[1]/div[2]/div')
         unread_btn.click()
         print("unread clicked")
         status = "Mở trang thông báo chưa đọc"
 
-        time.sleep(time_sleep)
+        time.sleep(5)
         news_btn = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div/div/div[2]/div/div[1]/div/div/div/div[1]/div[3]/div[2]/div/div/div[2]/div[1]')
         news_btn.click()
         print("notification clicked")
         status = "Xem thông báo chưa đọc mới nhất"
-        time.sleep(time_sleep)
 
         post_url = driver.current_url
 
@@ -133,6 +132,8 @@ def notifications_collector(driver):
             con.close()
         except:
             print("Lỗi khi thêm vào database")
+
+        time.sleep(2)
 
         driver.back()
         print("back to notifications page")
@@ -157,8 +158,8 @@ def notifications_collector(driver):
                     return None
         except:
             status = "Không có thông báo mới hoặc bị block tạm thời, chờ 5 phút thử lại"
-            print("EXCEPT NO NEW NOTIFICATION, wait 300s to recheck")
-            time.sleep(300)
+            print("EXCEPT NO NEW NOTIFICATION, wait 60s to recheck")
+            time.sleep(60)
             driver.get(notifications_url)
     return None
 
@@ -239,11 +240,11 @@ while True:
     print("-----")
     print(f"Notification {count_post} seeing")
     count += 1
-    count_post += 1
-    time.sleep(time_sleep)
+    time.sleep(2)
     if count < 100:
         try:
             notifications_collector(driver)
+            count_post += 1
         except:
             status = "Lỗi không xác định"
             print("EXCEPT TRUE")
@@ -257,7 +258,7 @@ while True:
             print("ANTI FB AI MODE")
             anti_fb_ai(driver)
         except:
-            time.sleep(300)
+            time.sleep(60)
 
     last_time = datetime.now(vn_tz).strftime("%Y-%m-%d %H:%M")
 
