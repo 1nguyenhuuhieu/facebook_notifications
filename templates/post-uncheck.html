@@ -3,10 +3,11 @@
 
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8">
-        <h3>Bài viết đã tìm thấy từ khóa</h3>
+        <h3>Bài viết đã thu thập</h3>
         <hr>
+        {{ posts }}
         {% for post in posts %}
-        <span>{{ post }}, </span>
+        <span>{{ post[0] }}, </span>
         {% endfor %}
     </div>
 </div>
